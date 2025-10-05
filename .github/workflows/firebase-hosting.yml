@@ -5,10 +5,13 @@ on:
     branches:
       - main
       - master
+      - 001-lets-create-a
+
   pull_request:
     branches:
       - main
       - master
+      - 001-lets-create-a
 
 jobs:
   build_and_deploy:
