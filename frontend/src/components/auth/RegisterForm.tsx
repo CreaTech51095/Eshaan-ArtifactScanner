@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../hooks/useAuth'
 import { CreateUserRequest, UserRole } from '../../types/user'
@@ -11,6 +12,7 @@ interface RegisterFormProps {
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin }) => {
   const { register: registerUser, loading, error, clearError } = useAuth()
+  const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -33,6 +35,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       await registerUser(userData)
       
       toast.success('Registration successful! Your account has been created with Researcher access.')
+      
+      // Explicitly navigate to dashboard after successful registration
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, 100)
+      
       onSuccess?.()
     } catch (err: any) {
       toast.error(err.message || 'Registration failed')

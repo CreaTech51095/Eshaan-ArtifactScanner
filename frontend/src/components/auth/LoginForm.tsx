@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../../hooks/useAuth'
 import { LoginRequest } from '../../types/user'
@@ -11,6 +12,7 @@ interface LoginFormProps {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) => {
   const { login, loading, error, clearError } = useAuth()
+  const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -26,6 +28,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
       clearError()
       await login(data)
       toast.success('Login successful!')
+      
+      // Explicitly navigate to dashboard after successful login
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true })
+      }, 100)
+      
       onSuccess?.()
     } catch (err: any) {
       toast.error(err.message || 'Login failed')
