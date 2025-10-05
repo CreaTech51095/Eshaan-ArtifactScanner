@@ -92,14 +92,18 @@ const ScannerPage: React.FC = () => {
   const handleScanSuccess = (decodedText: string) => {
     // Prevent multiple processing of the same scan
     if (isProcessingRef.current) {
+      console.log('Already processing, ignoring duplicate scan')
       return // Ignore if already processing
     }
     
     // Set flag immediately to prevent other callbacks
     isProcessingRef.current = true
+    console.log('Processing QR code:', decodedText)
     
-    // Stop scanner to prevent multiple scans
-    stopScanner()
+    // Immediately pause the scanner to prevent more callbacks
+    if (scannerRef.current) {
+      scannerRef.current.pause(true)
+    }
     
     setLastScanned(decodedText)
     
@@ -109,6 +113,10 @@ const ScannerPage: React.FC = () => {
     
     if (artifactIdMatch && artifactIdMatch[1]) {
       const artifactId = artifactIdMatch[1]
+      
+      // Stop scanner completely
+      stopScanner()
+      
       toast.success('QR Code scanned successfully!', {
         duration: 2000,
         icon: '✅'
@@ -119,6 +127,9 @@ const ScannerPage: React.FC = () => {
         navigate(`/artifacts/${artifactId}`)
       }, 500)
     } else {
+      // Stop scanner completely for invalid codes
+      stopScanner()
+      
       toast.error('Invalid QR code. Expected artifact URL.')
       // Restart scanner after a delay
       setTimeout(() => {
