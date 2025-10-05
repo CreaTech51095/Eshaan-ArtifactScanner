@@ -11,6 +11,8 @@ import UserProfilePage from './pages/UserProfilePage'
 import EditProfilePage from './pages/EditProfilePage'
 import ChangePasswordPage from './pages/ChangePasswordPage'
 import DeleteAccountPage from './pages/DeleteAccountPage'
+import RequestRolePage from './pages/RequestRolePage'
+import AdminPanelPage from './pages/AdminPanelPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
@@ -70,6 +72,14 @@ function App() {
           <Route 
             path="/profile/delete" 
             element={user ? <DeleteAccountPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/profile/request-role" 
+            element={user ? <RequestRolePage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/admin" 
+            element={user ? <AdminPanelPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/" 

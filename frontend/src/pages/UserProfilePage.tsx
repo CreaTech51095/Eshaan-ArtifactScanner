@@ -114,6 +114,24 @@ const UserProfilePage: React.FC = () => {
                 >
                   Change Password
                 </button>
+                {user.role !== 'admin' && (
+                  <button
+                    onClick={() => navigate('/profile/request-role')}
+                    className="btn btn-primary w-full justify-start"
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Request Role Upgrade
+                  </button>
+                )}
+                {user.role === 'admin' && (
+                  <button
+                    onClick={() => navigate('/admin')}
+                    className="btn btn-primary w-full justify-start"
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Admin Panel
+                  </button>
+                )}
                 <button
                   onClick={() => navigate('/profile/delete')}
                   className="btn btn-danger w-full justify-start"

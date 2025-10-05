@@ -1,29 +1,63 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Users can read/write their own user document
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+    // Helper function to get user role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
     
-    // Artifacts: archaeologists can create/edit, researchers can read
+    // Users can read/write their own user document
+    // Admins can update role field when approving requests
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && 
+        (request.auth.uid == userId || getUserRole() == 'admin');
+    }
+    
+    // Artifacts: archaeologists can create, only creator or admin can edit
     match /artifacts/{artifactId} {
       allow read: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'archaeologist', 'researcher']);
-      allow create, update: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'archaeologist']);
+        (getUserRole() in ['admin', 'archaeologist', 'researcher']);
+      allow create: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist']);
+      // Only artifact creator or admin can edit
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || resource.data.createdBy == request.auth.uid);
       allow delete: if request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+        getUserRole() == 'admin';
     }
     
     // Photos: same rules as artifacts
     match /photos/{photoId} {
       allow read: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'archaeologist', 'researcher']);
-      allow create, update: if request.auth != null && 
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'archaeologist']);
+        (getUserRole() in ['admin', 'archaeologist', 'researcher']);
+      allow create: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist']);
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || resource.data.createdBy == request.auth.uid);
       allow delete: if request.auth != null && 
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+        getUserRole() == 'admin';
+    }
+    
+    // Role Requests: users can create/read their own, admins can read/update all
+    match /roleRequests/{requestId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
+      allow update: if request.auth != null && 
+        getUserRole() == 'admin';
+    }
+    
+    // Artifact Comments: authenticated users can create, author can edit/delete
+    match /artifactComments/{commentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
+      allow delete: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
     }
     
     // Sync logs: users can only access their own

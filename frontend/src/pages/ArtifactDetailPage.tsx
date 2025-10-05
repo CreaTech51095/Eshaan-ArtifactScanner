@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Package, QrCode } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Package, QrCode, MessageSquare } from 'lucide-react'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ArtifactQRCode from '../components/artifacts/ArtifactQRCode'
 import { getArtifact, deleteArtifact } from '../services/artifacts'
 import { Artifact } from '../types/artifact'
+import { useAuth } from '../hooks/useAuth'
 
 const ArtifactDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [artifact, setArtifact] = useState<Artifact | null>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
@@ -109,25 +111,33 @@ const ArtifactDetailPage: React.FC = () => {
                 >
                   <QrCode className="w-4 h-4" />
                 </button>
-                <button
-                  onClick={() => navigate(`/artifacts/${id}/edit`)}
-                  className="btn btn-outline btn-sm"
-                  title="Edit artifact"
-                >
-                  <Edit className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={handleDelete}
-                  disabled={deleting}
-                  className="btn btn-danger btn-sm"
-                  title="Delete artifact"
-                >
-                  {deleting ? (
-                    <span className="animate-spin">⏳</span>
-                  ) : (
-                    <Trash2 className="w-4 h-4" />
-                  )}
-                </button>
+                {/* Only show edit button if user is creator or admin */}
+                {user && (user.id === artifact.createdBy || user.role === 'admin') && (
+                  <>
+                    <button
+                      onClick={() => navigate(`/artifacts/${id}/edit`)}
+                      className="btn btn-outline btn-sm"
+                      title="Edit artifact"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                    {/* Only admins can delete */}
+                    {user.role === 'admin' && (
+                      <button
+                        onClick={handleDelete}
+                        disabled={deleting}
+                        className="btn btn-danger btn-sm"
+                        title="Delete artifact"
+                      >
+                        {deleting ? (
+                          <span className="animate-spin">⏳</span>
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 

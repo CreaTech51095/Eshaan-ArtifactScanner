@@ -28,9 +28,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       clearError()
       
       const { confirmPassword, ...userData } = data
+      // Always set role to 'researcher' for new accounts
+      userData.role = 'researcher'
       await registerUser(userData)
       
-      toast.success('Registration successful!')
+      toast.success('Registration successful! Your account has been created with Researcher access.')
       onSuccess?.()
     } catch (err: any) {
       toast.error(err.message || 'Registration failed')
@@ -38,12 +40,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       setIsSubmitting(false)
     }
   }
-
-  const roles: { value: UserRole; label: string; description: string }[] = [
-    { value: 'researcher', label: 'Researcher', description: 'Read-only access to artifacts' },
-    { value: 'archaeologist', label: 'Archaeologist', description: 'Create and edit artifacts' },
-    { value: 'admin', label: 'Administrator', description: 'Full system access' }
-  ]
 
   return (
     <div className="w-full max-w-md mx-auto">
@@ -135,27 +131,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
             )}
           </div>
 
-          <div>
-            <label htmlFor="role" className="block text-sm font-medium text-secondary-700 mb-1">
-              Role
-            </label>
-            <select
-              {...register('role', {
-                required: 'Role is required'
-              })}
-              id="role"
-              className="input"
-            >
-              <option value="">Select a role</option>
-              {roles.map((role) => (
-                <option key={role.value} value={role.value}>
-                  {role.label} - {role.description}
-                </option>
-              ))}
-            </select>
-            {errors.role && (
-              <p className="text-red-600 text-sm mt-1">{errors.role.message}</p>
-            )}
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+            <p className="text-blue-800 text-sm">
+              <strong>📋 Account Type:</strong> Your account will be created with <strong>Researcher</strong> access (read-only). 
+              After registration, you can request an upgrade to Archaeologist or Admin roles from your profile settings.
+            </p>
           </div>
 
           <div>
