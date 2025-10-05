@@ -1,0 +1,13 @@
+# Firebase App Hosting configuration
+runConfig:
+  minInstances: 0
+  maxInstances: 1
+  
+env:
+  - variable: NODE_ENV
+    value: production
+
+# Build configuration
+build:
+  rootDirectory: frontend
+

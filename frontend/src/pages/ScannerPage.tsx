@@ -7,6 +7,7 @@ import toast from 'react-hot-toast'
 const ScannerPage: React.FC = () => {
   const navigate = useNavigate()
   const scannerRef = useRef<Html5Qrcode | null>(null)
+  const isProcessingRef = useRef(false) // Prevent multiple scan processing
   const [isScanning, setIsScanning] = useState(false)
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [manualId, setManualId] = useState('')
@@ -33,6 +34,8 @@ const ScannerPage: React.FC = () => {
         }
       }
 
+      // Reset processing flag when starting a new scan
+      isProcessingRef.current = false
       setIsScanning(true) // Set this first to show the container
 
       // Small delay to ensure DOM is ready
@@ -87,6 +90,14 @@ const ScannerPage: React.FC = () => {
   }
 
   const handleScanSuccess = (decodedText: string) => {
+    // Prevent multiple processing of the same scan
+    if (isProcessingRef.current) {
+      return // Ignore if already processing
+    }
+    
+    // Set flag immediately to prevent other callbacks
+    isProcessingRef.current = true
+    
     // Stop scanner to prevent multiple scans
     stopScanner()
     
@@ -111,6 +122,7 @@ const ScannerPage: React.FC = () => {
       toast.error('Invalid QR code. Expected artifact URL.')
       // Restart scanner after a delay
       setTimeout(() => {
+        isProcessingRef.current = false // Reset flag before restarting
         startScanner()
       }, 2000)
     }
