@@ -1,0 +1,36 @@
+{
+  "name": "Archaeological Artifacts Scanner",
+  "short_name": "Artifacts Scanner",
+  "description": "Scan and manage archaeological artifacts with QR codes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "categories": ["utilities", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Scan QR Code",
+      "short_name": "Scan",
+      "description": "Open QR code scanner",
+      "url": "/scanner"
+    },
+    {
+      "name": "View Artifacts",
+      "short_name": "Artifacts",
+      "description": "Browse artifact list",
+      "url": "/artifacts"
+    }
+  ],
+  "permissions": ["camera", "storage"],
+  "prefer_related_applications": false
+}
+

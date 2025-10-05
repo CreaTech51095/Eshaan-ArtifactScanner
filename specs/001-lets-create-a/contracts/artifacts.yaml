@@ -1,0 +1,577 @@
+openapi: 3.0.0
+info:
+  title: Archaeological Artifacts Scanner - Artifacts API
+  version: 1.0.0
+  description: Artifact management endpoints for CRUD operations and QR code scanning
+
+servers:
+  - url: https://us-central1-artifacts-scanner.cloudfunctions.net/api
+    description: Firebase Functions API
+
+paths:
+  /artifacts:
+    get:
+      summary: List artifacts
+      description: Get paginated list of artifacts with optional filtering
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+          description: Page number
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Items per page
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name, description, or discovery site
+        - name: artifactType
+          in: query
+          schema:
+            type: string
+          description: Filter by artifact type
+        - name: discoverySite
+          in: query
+          schema:
+            type: string
+          description: Filter by discovery site
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by discovery date from
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by discovery date to
+      responses:
+        '200':
+          description: List of artifacts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  artifacts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Artifact'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: Create artifact
+      description: Create a new artifact record
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateArtifactRequest'
+      responses:
+        '201':
+          description: Artifact created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artifact'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /artifacts/{id}:
+    get:
+      summary: Get artifact
+      description: Get a specific artifact by ID
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Artifact ID
+      responses:
+        '200':
+          description: Artifact details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artifact'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update artifact
+      description: Update an existing artifact
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Artifact ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateArtifactRequest'
+      responses:
+        '200':
+          description: Artifact updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artifact'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Version conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete artifact
+      description: Soft delete an artifact (admin only)
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Artifact ID
+      responses:
+        '200':
+          description: Artifact deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Artifact deleted successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /artifacts/qr/{qrCode}:
+    get:
+      summary: Get artifact by QR code
+      description: Retrieve artifact information by scanning QR code
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: qrCode
+          in: path
+          required: true
+          schema:
+            type: string
+          description: QR code content
+      responses:
+        '200':
+          description: Artifact found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Artifact'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /artifacts/{id}/photos:
+    post:
+      summary: Upload artifact photo
+      description: Upload a photo for an artifact
+      tags:
+        - Artifacts
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Artifact ID
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Image file
+                caption:
+                  type: string
+                  maxLength: 500
+                  description: Photo caption
+      responses:
+        '201':
+          description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Photo'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Artifact not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    Artifact:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "artifact_123"
+        qrCode:
+          type: string
+          example: "ART-2024-001"
+        name:
+          type: string
+          example: "Ancient Pottery Vase"
+        description:
+          type: string
+          example: "A well-preserved ceramic vase from the Bronze Age"
+        artifactType:
+          type: string
+          example: "pottery"
+        discoveryDate:
+          type: string
+          format: date
+          example: "2024-12-15"
+        discoverySite:
+          type: string
+          example: "Site Alpha, Trench 3"
+        location:
+          type: string
+          example: "Museum Storage Room A"
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Photo'
+        metadata:
+          type: object
+          additionalProperties: true
+        createdBy:
+          type: string
+          example: "user_123"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-12-19T10:30:00Z"
+        lastModifiedBy:
+          type: string
+          example: "user_123"
+        lastModifiedAt:
+          type: string
+          format: date-time
+          example: "2024-12-19T10:30:00Z"
+        version:
+          type: integer
+          example: 1
+        isDeleted:
+          type: boolean
+          example: false
+
+    Photo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "photo_123"
+        artifactId:
+          type: string
+          example: "artifact_123"
+        url:
+          type: string
+          format: uri
+          example: "https://storage.googleapis.com/artifacts-scanner.appspot.com/artifacts/artifact_123/photo_123.jpg"
+        filename:
+          type: string
+          example: "vase_front_view.jpg"
+        size:
+          type: integer
+          example: 2048576
+        mimeType:
+          type: string
+          example: "image/jpeg"
+        width:
+          type: integer
+          example: 1920
+        height:
+          type: integer
+          example: 1080
+        caption:
+          type: string
+          example: "Front view of the pottery vase"
+        takenAt:
+          type: string
+          format: date-time
+          example: "2024-12-15T14:30:00Z"
+        uploadedBy:
+          type: string
+          example: "user_123"
+        uploadedAt:
+          type: string
+          format: date-time
+          example: "2024-12-19T10:30:00Z"
+        isThumbnail:
+          type: boolean
+          example: false
+
+    CreateArtifactRequest:
+      type: object
+      required:
+        - name
+        - artifactType
+        - discoveryDate
+        - discoverySite
+        - location
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Ancient Pottery Vase"
+        description:
+          type: string
+          maxLength: 2000
+          example: "A well-preserved ceramic vase from the Bronze Age"
+        artifactType:
+          type: string
+          example: "pottery"
+        discoveryDate:
+          type: string
+          format: date
+          example: "2024-12-15"
+        discoverySite:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Site Alpha, Trench 3"
+        location:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Museum Storage Room A"
+        metadata:
+          type: object
+          additionalProperties: true
+
+    UpdateArtifactRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Ancient Pottery Vase"
+        description:
+          type: string
+          maxLength: 2000
+          example: "A well-preserved ceramic vase from the Bronze Age"
+        artifactType:
+          type: string
+          example: "pottery"
+        discoveryDate:
+          type: string
+          format: date
+          example: "2024-12-15"
+        discoverySite:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Site Alpha, Trench 3"
+        location:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "Museum Storage Room A"
+        metadata:
+          type: object
+          additionalProperties: true
+        version:
+          type: integer
+          example: 1
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 20
+        total:
+          type: integer
+          example: 150
+        totalPages:
+          type: integer
+          example: 8
+        hasNext:
+          type: boolean
+          example: true
+        hasPrev:
+          type: boolean
+          example: false
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          example: "Invalid input data"
+        details:
+          type: object
+          additionalProperties: true
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

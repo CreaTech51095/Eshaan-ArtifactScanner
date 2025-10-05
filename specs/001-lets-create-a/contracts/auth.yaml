@@ -1,0 +1,208 @@
+openapi: 3.0.0
+info:
+  title: Archaeological Artifacts Scanner - Authentication API
+  version: 1.0.0
+  description: Authentication endpoints for user login and registration
+
+servers:
+  - url: https://us-central1-artifacts-scanner.cloudfunctions.net/api
+    description: Firebase Functions API
+
+paths:
+  /auth/login:
+    post:
+      summary: User login
+      description: Authenticate user with username and password
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "archaeologist@university.edu"
+                password:
+                  type: string
+                  minLength: 6
+                  example: "securePassword123"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: Firebase ID token
+                  expiresIn:
+                    type: string
+                    example: "3600"
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/register:
+    post:
+      summary: User registration
+      description: Register a new user account
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - username
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "newuser@university.edu"
+                password:
+                  type: string
+                  minLength: 6
+                  example: "securePassword123"
+                username:
+                  type: string
+                  minLength: 3
+                  maxLength: 50
+                  pattern: "^[a-zA-Z0-9_]+$"
+                  example: "archaeologist_jane"
+                displayName:
+                  type: string
+                  maxLength: 100
+                  example: "Dr. Jane Smith"
+                role:
+                  type: string
+                  enum: [admin, archaeologist, researcher]
+                  example: "archaeologist"
+      responses:
+        '201':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: Firebase ID token
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      summary: User logout
+      description: Logout current user
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Logged out successfully"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "firebase_uid_123"
+        email:
+          type: string
+          format: email
+          example: "archaeologist@university.edu"
+        username:
+          type: string
+          example: "archaeologist_jane"
+        role:
+          type: string
+          enum: [admin, archaeologist, researcher]
+          example: "archaeologist"
+        displayName:
+          type: string
+          example: "Dr. Jane Smith"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-12-19T10:30:00Z"
+        lastLoginAt:
+          type: string
+          format: date-time
+          example: "2024-12-19T10:30:00Z"
+        isActive:
+          type: boolean
+          example: true
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          example: "INVALID_CREDENTIALS"
+        message:
+          type: string
+          example: "Invalid email or password"
+        details:
+          type: object
+          additionalProperties: true
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
