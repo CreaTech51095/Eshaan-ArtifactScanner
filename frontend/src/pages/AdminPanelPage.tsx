@@ -24,8 +24,14 @@ const AdminPanelPage: React.FC = () => {
     console.log('AdminPanelPage: user =', user)
     console.log('AdminPanelPage: user.role =', user?.role)
     
-    if (!user || user.role !== 'admin') {
-      console.log('❌ Access denied. User role:', user?.role, '(expected: admin)')
+    // Don't check access until user is fully loaded
+    if (!user) {
+      console.log('⏳ Waiting for user to load...')
+      return
+    }
+    
+    if (user.role !== 'admin') {
+      console.log('❌ Access denied. User role:', user.role, '(expected: admin)')
       navigate('/dashboard', { replace: true })
       return
     }

@@ -18,7 +18,9 @@ class AuthService {
     // Listen to auth state changes
     onAuthStateChanged(auth, async (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
+        console.log('🔄 Auth state changed. Fetching user profile for:', firebaseUser.email)
         this.currentUser = await this.getUserProfile(firebaseUser.uid)
+        console.log('🔄 Auth state updated. Current user role:', this.currentUser.role)
       } else {
         this.currentUser = null
       }
