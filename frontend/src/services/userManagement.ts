@@ -81,8 +81,9 @@ export const getUsersByRole = async (role: UserRole): Promise<User[]> => {
 }
 
 /**
- * Deactivate a user account (soft delete) - Admin only
+ * Deactivate a user account (mark as inactive in Firestore) - Admin only
  * Cannot delete admin accounts
+ * User will be blocked from logging in via the auth service check
  */
 export const deactivateUser = async (userId: string): Promise<void> => {
   try {
@@ -93,7 +94,8 @@ export const deactivateUser = async (userId: string): Promise<void> => {
 
     const userRef = doc(db, 'users', userId)
 
-    // Mark user as inactive
+    // Mark user as inactive in Firestore
+    // The auth service will check this on login and block inactive users
     await updateDoc(userRef, {
       isActive: false,
       deletedAt: serverTimestamp(),
@@ -108,7 +110,7 @@ export const deactivateUser = async (userId: string): Promise<void> => {
 }
 
 /**
- * Reactivate a user account - Admin only
+ * Reactivate a user account (mark as active in Firestore) - Admin only
  */
 export const reactivateUser = async (userId: string): Promise<void> => {
   try {
@@ -119,7 +121,7 @@ export const reactivateUser = async (userId: string): Promise<void> => {
 
     const userRef = doc(db, 'users', userId)
 
-    // Mark user as active again
+    // Mark user as active again in Firestore
     await updateDoc(userRef, {
       isActive: true,
       reactivatedAt: serverTimestamp(),

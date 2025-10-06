@@ -12,6 +12,7 @@ import authRoutes from './auth'
 import artifactRoutes from './artifacts'
 import photoRoutes from './photos'
 import syncRoutes from './sync'
+import adminRoutes from './admin'
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use('/auth', authRoutes)
 app.use('/artifacts', artifactRoutes)
 app.use('/photos', photoRoutes)
 app.use('/sync', syncRoutes)
+app.use('/admin', adminRoutes)
 
 // Health check endpoint
 app.get('/health', (req, res) => {

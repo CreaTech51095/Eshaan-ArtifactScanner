@@ -39,6 +39,14 @@ class AuthService {
       )
       
       const user = await this.getUserProfile(userCredential.user.uid)
+      
+      // Check if user account is active
+      if (!user.isActive) {
+        // Sign out the user immediately
+        await signOut(auth)
+        throw new Error('Your account has been deactivated by an administrator. Please contact support.')
+      }
+      
       const token = await userCredential.user.getIdToken()
       
       return {
