@@ -15,6 +15,7 @@ import {
   CreateCommentData,
   UpdateCommentData
 } from '../types/comment'
+import { authService } from './auth'
 
 const COMMENTS_COLLECTION = 'artifactComments'
 
@@ -31,8 +32,7 @@ export const createComment = async (
     }
 
     // Get current user profile
-    const { getUserProfile } = await import('./auth')
-    const userProfile = await getUserProfile(user.uid)
+    const userProfile = await authService.getUserProfile(user.uid)
 
     const commentData = {
       artifactId: data.artifactId,

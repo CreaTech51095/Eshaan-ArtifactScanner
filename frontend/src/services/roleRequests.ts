@@ -19,6 +19,7 @@ import {
   RoleRequestStatus
 } from '../types/roleRequest'
 import { UserRole } from '../types/user'
+import { authService } from './auth'
 
 const ROLE_REQUESTS_COLLECTION = 'roleRequests'
 
@@ -35,8 +36,7 @@ export const createRoleRequest = async (
     }
 
     // Get current user profile to get current role
-    const { getUserProfile } = await import('./auth')
-    const userProfile = await getUserProfile(user.uid)
+    const userProfile = await authService.getUserProfile(user.uid)
 
     // Check if user already has a pending request
     const existingRequest = await getPendingRequestForUser(user.uid)
