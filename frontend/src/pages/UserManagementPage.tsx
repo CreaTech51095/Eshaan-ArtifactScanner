@@ -22,7 +22,12 @@ const UserManagementPage: React.FC = () => {
   const [newRole, setNewRole] = useState<UserRole>('researcher')
 
   useEffect(() => {
-    if (!user || user.role !== 'admin') {
+    // Don't check access until user is fully loaded
+    if (!user) {
+      return
+    }
+    
+    if (user.role !== 'admin') {
       navigate('/dashboard', { replace: true })
       return
     }
