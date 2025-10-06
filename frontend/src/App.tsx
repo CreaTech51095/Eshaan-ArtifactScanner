@@ -13,6 +13,7 @@ import ChangePasswordPage from './pages/ChangePasswordPage'
 import DeleteAccountPage from './pages/DeleteAccountPage'
 import RequestRolePage from './pages/RequestRolePage'
 import AdminPanelPage from './pages/AdminPanelPage'
+import UserManagementPage from './pages/UserManagementPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
@@ -80,6 +81,10 @@ function App() {
           <Route 
             path="/admin" 
             element={user ? <AdminPanelPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/admin/users" 
+            element={user ? <UserManagementPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/" 

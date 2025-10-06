@@ -118,13 +118,24 @@ const AdminPanelPage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Shield className="w-8 h-8 text-primary-600" />
-            Admin Panel
-          </h1>
-          <p className="mt-2 text-gray-600">
-            Manage role requests from users
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                <Shield className="w-8 h-8 text-primary-600" />
+                Admin Panel
+              </h1>
+              <p className="mt-2 text-gray-600">
+                Manage role requests from users
+              </p>
+            </div>
+            <button
+              onClick={() => navigate('/admin/users')}
+              className="btn btn-primary flex items-center gap-2"
+            >
+              <Users className="w-5 h-5" />
+              Manage Users
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
