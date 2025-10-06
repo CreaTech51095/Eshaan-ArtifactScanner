@@ -119,6 +119,8 @@ class AuthService {
             isActive: true
           }
           
+          console.log('⚠️ Creating new user profile for:', firebaseUser.email, 'with role:', newUser.role)
+          
           // Save to Firestore for future use
           await setDoc(doc(db, 'users', userId), newUser)
           return newUser
@@ -127,8 +129,11 @@ class AuthService {
         throw new Error('User profile not found and could not create one')
       }
 
-      return userDoc.data() as User
+      const userData = userDoc.data() as User
+      console.log('✅ Loaded user profile:', userData.email, 'with role:', userData.role)
+      return userData
     } catch (error: any) {
+      console.error('❌ Error in getUserProfile:', error)
       throw this.handleAuthError(error)
     }
   }

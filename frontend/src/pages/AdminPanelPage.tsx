@@ -22,8 +22,7 @@ const AdminPanelPage: React.FC = () => {
 
   useEffect(() => {
     if (!user || user.role !== 'admin') {
-      navigate('/dashboard')
-      toast.error('Access denied. Admin role required.')
+      navigate('/dashboard', { replace: true })
       return
     }
 

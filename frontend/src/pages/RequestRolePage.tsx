@@ -35,8 +35,12 @@ const RequestRolePage: React.FC = () => {
 
       const history = await getRoleRequestsForUser(user.id)
       setRequestHistory(history)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading requests:', error)
+      // Only show error toast if it's not a permission issue
+      if (!error.message?.includes('permission') && !error.message?.includes('denied')) {
+        toast.error('Failed to load role requests')
+      }
     } finally {
       setLoading(false)
     }
