@@ -13,7 +13,6 @@ const ArtifactEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const permissions = user ? getUserPermissions(user.role) : null
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [initialData, setInitialData] = useState<Partial<CreateArtifactRequest>>()
@@ -21,10 +20,13 @@ const ArtifactEditPage: React.FC = () => {
   useEffect(() => {
     const loadArtifact = async () => {
       // Check permissions first
-      if (user && !permissions?.canEditArtifacts) {
-        toast.error('You do not have permission to edit artifacts')
-        navigate('/artifacts')
-        return
+      if (user) {
+        const permissions = getUserPermissions(user.role)
+        if (!permissions.canEditArtifacts) {
+          toast.error('You do not have permission to edit artifacts')
+          navigate('/artifacts')
+          return
+        }
       }
 
       if (!id) {
@@ -66,7 +68,7 @@ const ArtifactEditPage: React.FC = () => {
     }
 
     loadArtifact()
-  }, [id, navigate, user, permissions])
+  }, [id, navigate, user])
 
   const handleSubmit = async (data: CreateArtifactRequest) => {
     if (!id) return

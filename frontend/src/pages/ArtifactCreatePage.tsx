@@ -11,16 +11,18 @@ import { getUserPermissions } from '../types/user'
 const ArtifactCreatePage: React.FC = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
-  const permissions = user ? getUserPermissions(user.role) : null
   const [loading, setLoading] = React.useState(false)
 
   // Redirect if user doesn't have permission to create artifacts
   useEffect(() => {
-    if (user && !permissions?.canCreateArtifacts) {
-      toast.error('You do not have permission to create artifacts')
-      navigate('/artifacts')
+    if (user) {
+      const permissions = getUserPermissions(user.role)
+      if (!permissions.canCreateArtifacts) {
+        toast.error('You do not have permission to create artifacts')
+        navigate('/artifacts')
+      }
     }
-  }, [user, permissions, navigate])
+  }, [user, navigate])
 
   const handleSubmit = async (data: CreateArtifactRequest) => {
     setLoading(true)
