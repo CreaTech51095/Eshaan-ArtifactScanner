@@ -237,6 +237,7 @@ const EditProfilePage: React.FC = () => {
                   )}
                   
                   <p className="text-sm text-gray-500 mt-1">
+                    As an Archaeologist, you can create, edit, delete, and manage your own artifacts. 
                     You can downgrade to Researcher for read-only access. Contact an administrator to upgrade to Admin.
                   </p>
                 </>

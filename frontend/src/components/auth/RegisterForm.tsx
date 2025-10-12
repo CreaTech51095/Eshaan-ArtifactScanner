@@ -160,7 +160,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
             
             <div className="mt-2 space-y-2">
               <div className="p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
-                <strong>Archaeologist:</strong> Create, edit, and manage artifacts with photo uploads.
+                <strong>Archaeologist:</strong> Create, edit, delete, and manage your own artifacts with photo uploads.
               </div>
               <div className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700">
                 <strong>Researcher:</strong> View and browse artifacts (read-only access).

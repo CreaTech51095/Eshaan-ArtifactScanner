@@ -76,9 +76,9 @@ export const getUserPermissions = (role: UserRole): UserPermissions => {
       return {
         canCreateArtifacts: true,
         canEditArtifacts: true,
-        canDeleteArtifacts: false,
+        canDeleteArtifacts: true,
         canUploadPhotos: true,
-        canDeletePhotos: false,
+        canDeletePhotos: true,
         canManageUsers: false,
       }
     case 'researcher':
