@@ -160,7 +160,7 @@ class AuthService {
             id: firebaseUser.uid,
             email: firebaseUser.email || '',
             username: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'user',
-            role: 'researcher', // Default role
+            role: 'archaeologist', // Default role
             displayName: firebaseUser.displayName || undefined,
             createdAt: new Date().toISOString(),
             lastLoginAt: new Date().toISOString(),

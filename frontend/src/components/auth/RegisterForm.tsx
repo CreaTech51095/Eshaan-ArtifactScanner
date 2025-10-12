@@ -30,11 +30,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       clearError()
       
       const { confirmPassword, ...userData } = data
-      // Always set role to 'researcher' for new accounts
-      userData.role = 'researcher'
+      // Always set role to 'archaeologist' for new accounts
+      userData.role = 'archaeologist'
       await registerUser(userData)
       
-      toast.success('Registration successful! Your account has been created with Researcher access.')
+      toast.success('Registration successful! Your account has been created with Archaeologist access.')
       
       // Explicitly navigate to dashboard after successful registration
       setTimeout(() => {
@@ -141,8 +141,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
 
           <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
             <p className="text-blue-800 text-sm">
-              <strong>📋 Account Type:</strong> Your account will be created with <strong>Researcher</strong> access (read-only). 
-              After registration, you can request an upgrade to Archaeologist or Admin roles from your profile settings.
+              <strong>📋 Account Type:</strong> Your account will be created with <strong>Archaeologist</strong> access. 
+              You will be able to create, edit, and manage artifacts. To request Admin access, visit your profile settings after registration.
             </p>
           </div>
 
