@@ -102,39 +102,50 @@ const UserProfileMenu: React.FC = () => {
           </div>
 
           {/* Menu Items */}
-          <div className="py-1">
-            <button
-              onClick={handleViewProfile}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-            >
-              <User className="w-4 h-4" />
-              <span>View Profile</span>
-            </button>
+          {user.role !== 'guest' && (
+            <div className="py-1">
+              <button
+                onClick={handleViewProfile}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                <User className="w-4 h-4" />
+                <span>View Profile</span>
+              </button>
 
-            <button
-              onClick={handleViewProfile}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-            >
-              <Settings className="w-4 h-4" />
-              <span>Account Settings</span>
-            </button>
-          </div>
+              <button
+                onClick={handleViewProfile}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Account Settings</span>
+              </button>
+            </div>
+          )}
+
+          {user.role === 'guest' && (
+            <div className="py-1 px-4 text-xs text-gray-500">
+              <p className="italic">You're browsing as a guest.</p>
+              <p className="mt-1">Create an account to save data and access more features.</p>
+            </div>
+          )}
 
           <div className="border-t border-gray-200 py-1">
-            <button
-              onClick={handleDeleteAccount}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>Delete Account</span>
-            </button>
+            {user.role !== 'guest' && (
+              <button
+                onClick={handleDeleteAccount}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete Account</span>
+              </button>
+            )}
 
             <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              <span>Log Out</span>
+              <span>{user.role === 'guest' ? 'Exit Guest Mode' : 'Log Out'}</span>
             </button>
           </div>
         </div>

@@ -21,7 +21,7 @@ service cloud.firestore {
     // Artifacts: archaeologists can create, only creator or admin can edit
     match /artifacts/{artifactId} {
       allow read: if request.auth != null && 
-        (getUserRole() in ['admin', 'archaeologist', 'researcher']);
+        (getUserRole() in ['admin', 'archaeologist', 'researcher', 'guest']);
       allow create: if request.auth != null && 
         (getUserRole() in ['admin', 'archaeologist']);
       // Only artifact creator or admin can edit
@@ -34,7 +34,7 @@ service cloud.firestore {
     // Photos: same rules as artifacts
     match /photos/{photoId} {
       allow read: if request.auth != null && 
-        (getUserRole() in ['admin', 'archaeologist', 'researcher']);
+        (getUserRole() in ['admin', 'archaeologist', 'researcher', 'guest']);
       allow create: if request.auth != null && 
         (getUserRole() in ['admin', 'archaeologist']);
       allow update: if request.auth != null && 

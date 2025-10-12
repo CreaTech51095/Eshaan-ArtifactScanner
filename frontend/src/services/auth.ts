@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
+  signInAnonymously,
   User as FirebaseUser,
   updateProfile
 } from 'firebase/auth'
@@ -92,6 +93,43 @@ class AuthService {
       return {
         user,
         token
+      }
+    } catch (error: any) {
+      throw this.handleAuthError(error)
+    }
+  }
+
+  async loginAsGuest(): Promise<AuthResponse> {
+    try {
+      // Sign in anonymously with Firebase
+      const userCredential = await signInAnonymously(auth)
+      
+      // Create a guest user profile
+      const guestId = userCredential.user.uid
+      const guestNumber = Date.now().toString().slice(-6)
+      
+      const guestUser: User = {
+        id: guestId,
+        email: `guest_${guestNumber}@guest.local`,
+        username: `Guest_${guestNumber}`,
+        role: 'guest',
+        displayName: `Guest User`,
+        createdAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+        isActive: true
+      }
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'users', guestId), guestUser)
+      
+      const token = await userCredential.user.getIdToken()
+      
+      console.log('✅ Guest user created:', guestUser.username)
+      
+      return {
+        user: guestUser,
+        token,
+        expiresIn: '3600'
       }
     } catch (error: any) {
       throw this.handleAuthError(error)

@@ -96,6 +96,8 @@ const UserManagementPage: React.FC = () => {
         return 'bg-blue-100 text-blue-800'
       case 'researcher':
         return 'bg-green-100 text-green-800'
+      case 'guest':
+        return 'bg-yellow-100 text-yellow-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
@@ -170,6 +172,7 @@ const UserManagementPage: React.FC = () => {
                   <option value="admin">Admin</option>
                   <option value="archaeologist">Archaeologist</option>
                   <option value="researcher">Researcher</option>
+                  <option value="guest">Guest</option>
                 </select>
               </div>
             </div>

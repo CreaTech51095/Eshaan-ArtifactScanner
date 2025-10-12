@@ -1,4 +1,4 @@
-export type UserRole = 'admin' | 'archaeologist' | 'researcher'
+export type UserRole = 'admin' | 'archaeologist' | 'researcher' | 'guest'
 
 export interface User {
   id: string
@@ -82,6 +82,15 @@ export const getUserPermissions = (role: UserRole): UserPermissions => {
         canManageUsers: false,
       }
     case 'researcher':
+      return {
+        canCreateArtifacts: false,
+        canEditArtifacts: false,
+        canDeleteArtifacts: false,
+        canUploadPhotos: false,
+        canDeletePhotos: false,
+        canManageUsers: false,
+      }
+    case 'guest':
       return {
         canCreateArtifacts: false,
         canEditArtifacts: false,
