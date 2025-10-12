@@ -2,10 +2,12 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import LoadingSpinner from '../components/common/LoadingSpinner'
+import { getUserPermissions } from '../types/user'
 
 const DashboardPage: React.FC = () => {
   const { user, loading } = useAuth()
   const navigate = useNavigate()
+  const permissions = user ? getUserPermissions(user.role) : null
 
   if (loading) {
     return <LoadingSpinner text="Loading dashboard..." />
@@ -65,13 +67,15 @@ const DashboardPage: React.FC = () => {
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
             Quick Actions
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <button 
-              onClick={() => navigate('/artifacts/new')}
-              className="btn btn-primary btn-lg"
-            >
-              Add New Artifact
-            </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {permissions?.canCreateArtifacts && (
+              <button 
+                onClick={() => navigate('/artifacts/new')}
+                className="btn btn-primary btn-lg"
+              >
+                Add New Artifact
+              </button>
+            )}
             <button 
               onClick={() => navigate('/scanner')}
               className="btn btn-outline btn-lg"
@@ -83,12 +87,6 @@ const DashboardPage: React.FC = () => {
               className="btn btn-outline btn-lg"
             >
               View All Artifacts
-            </button>
-            <button 
-              onClick={() => alert('Photo upload will be available soon!')}
-              className="btn btn-outline btn-lg"
-            >
-              Upload Photos
             </button>
           </div>
         </div>

@@ -6,16 +6,27 @@ import ArtifactForm from '../components/artifacts/ArtifactForm'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { getArtifact, updateArtifact } from '../services/artifacts'
 import { CreateArtifactRequest } from '../types/artifact'
+import { useAuth } from '../hooks/useAuth'
+import { getUserPermissions } from '../types/user'
 
 const ArtifactEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const permissions = user ? getUserPermissions(user.role) : null
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [initialData, setInitialData] = useState<Partial<CreateArtifactRequest>>()
 
   useEffect(() => {
     const loadArtifact = async () => {
+      // Check permissions first
+      if (user && !permissions?.canEditArtifacts) {
+        toast.error('You do not have permission to edit artifacts')
+        navigate('/artifacts')
+        return
+      }
+
       if (!id) {
         navigate('/artifacts')
         return
@@ -55,7 +66,7 @@ const ArtifactEditPage: React.FC = () => {
     }
 
     loadArtifact()
-  }, [id, navigate])
+  }, [id, navigate, user, permissions])
 
   const handleSubmit = async (data: CreateArtifactRequest) => {
     if (!id) return
@@ -130,6 +141,7 @@ const ArtifactEditPage: React.FC = () => {
               onSubmit={handleSubmit} 
               loading={saving}
               initialData={initialData}
+              isEditMode={true}
             />
           </div>
         </div>

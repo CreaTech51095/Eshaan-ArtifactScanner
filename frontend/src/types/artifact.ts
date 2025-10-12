@@ -35,11 +35,12 @@ export interface Artifact {
 
 export interface CreateArtifactRequest {
   name: string
-  description?: string
+  description: string
   artifactType: string
   discoveryDate: string
   discoverySite: string
   location: string
+  photos: File[]
   metadata?: Record<string, any>
 }
 
@@ -50,6 +51,7 @@ export interface UpdateArtifactRequest {
   discoveryDate?: string
   discoverySite?: string
   location?: string
+  photos?: File[]
   metadata?: Record<string, any>
   version: number
 }

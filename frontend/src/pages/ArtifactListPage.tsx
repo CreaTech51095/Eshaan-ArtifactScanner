@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Search, Package } from 'lucide-react'
+import { Plus, Search, Package, Image } from 'lucide-react'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { getArtifacts } from '../services/artifacts'
 import { Artifact } from '../types/artifact'
+import { useAuth } from '../hooks/useAuth'
+import { getUserPermissions } from '../types/user'
 
 const ArtifactListPage: React.FC = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const permissions = user ? getUserPermissions(user.role) : null
   const [artifacts, setArtifacts] = useState<Artifact[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -22,6 +26,10 @@ const ArtifactListPage: React.FC = () => {
       const data = await getArtifacts()
       setArtifacts(data)
       console.log('✅ Loaded artifacts:', data.length)
+      console.log('📸 First artifact photos:', data[0]?.photos)
+      data.forEach((artifact, index) => {
+        console.log(`Artifact ${index}: ${artifact.name} - Photos: ${artifact.photos?.length || 0}`)
+      })
     } catch (error: any) {
       console.error('Error loading artifacts:', error)
       toast.error('Failed to load artifacts')
@@ -54,13 +62,15 @@ const ArtifactListPage: React.FC = () => {
               Browse and manage your archaeological artifacts
             </p>
           </div>
-          <button
-            onClick={() => navigate('/artifacts/new')}
-            className="btn btn-primary flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add New Artifact
-          </button>
+          {permissions?.canCreateArtifacts && (
+            <button
+              onClick={() => navigate('/artifacts/new')}
+              className="btn btn-primary flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Add New Artifact
+            </button>
+          )}
         </div>
 
         {/* Search Bar */}
@@ -88,9 +98,11 @@ const ArtifactListPage: React.FC = () => {
               <p className="text-gray-600 mb-6">
                 {searchTerm
                   ? 'Try adjusting your search criteria'
-                  : 'Get started by adding your first artifact'}
+                  : permissions?.canCreateArtifacts 
+                    ? 'Get started by adding your first artifact'
+                    : 'No artifacts available yet'}
               </p>
-              {!searchTerm && (
+              {!searchTerm && permissions?.canCreateArtifacts && (
                 <button
                   onClick={() => navigate('/artifacts/new')}
                   className="btn btn-primary"
@@ -107,8 +119,34 @@ const ArtifactListPage: React.FC = () => {
               <div
                 key={artifact.id}
                 onClick={() => navigate(`/artifacts/${artifact.id}`)}
-                className="card hover:shadow-lg transition-shadow cursor-pointer"
+                className="card hover:shadow-lg transition-shadow cursor-pointer overflow-hidden"
               >
+                {/* Photo Thumbnail */}
+                {artifact.photos && Array.isArray(artifact.photos) && artifact.photos.length > 0 ? (
+                  <div className="w-full h-48 overflow-hidden relative">
+                    <img
+                      src={artifact.photos[0].url}
+                      alt={artifact.name}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.error('Failed to load thumbnail:', artifact.photos[0].url)
+                        e.currentTarget.style.display = 'none'
+                        e.currentTarget.parentElement!.innerHTML = '<div class="w-full h-48 bg-gray-100 flex items-center justify-center"><svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg></div>'
+                      }}
+                    />
+                    {artifact.photos.length > 1 && (
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+                        +{artifact.photos.length - 1} more
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="w-full h-48 bg-gray-100 flex items-center justify-center">
+                    <Image className="w-12 h-12 text-gray-300" />
+                    <span className="absolute text-xs text-gray-400 mt-20">No photos</span>
+                  </div>
+                )}
+
                 <div className="card-content">
                   <div className="flex justify-between items-start mb-3">
                     <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">

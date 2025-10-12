@@ -1,14 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ArtifactForm from '../components/artifacts/ArtifactForm'
 import { CreateArtifactRequest } from '../types/artifact'
 import { createArtifact } from '../services/artifacts'
+import { useAuth } from '../hooks/useAuth'
+import { getUserPermissions } from '../types/user'
 
 const ArtifactCreatePage: React.FC = () => {
   const navigate = useNavigate()
+  const { user } = useAuth()
+  const permissions = user ? getUserPermissions(user.role) : null
   const [loading, setLoading] = React.useState(false)
+
+  // Redirect if user doesn't have permission to create artifacts
+  useEffect(() => {
+    if (user && !permissions?.canCreateArtifacts) {
+      toast.error('You do not have permission to create artifacts')
+      navigate('/artifacts')
+    }
+  }, [user, permissions, navigate])
 
   const handleSubmit = async (data: CreateArtifactRequest) => {
     setLoading(true)

@@ -12,13 +12,19 @@ import {
   Timestamp,
   serverTimestamp 
 } from 'firebase/firestore'
+import { 
+  ref, 
+  uploadBytes, 
+  getDownloadURL 
+} from 'firebase/storage'
 import QRCode from 'qrcode'
-import { db } from './firebase'
+import { db, storage } from './firebase'
 import { auth } from './firebase'
 import { 
   Artifact, 
   CreateArtifactRequest, 
-  UpdateArtifactRequest 
+  UpdateArtifactRequest,
+  Photo 
 } from '../types/artifact'
 
 const ARTIFACTS_COLLECTION = 'artifacts'
@@ -45,6 +51,62 @@ const generateQRCodeDataURL = async (artifactId: string): Promise<string> => {
 }
 
 /**
+ * Upload a photo to Firebase Storage
+ */
+const uploadPhoto = async (
+  artifactId: string,
+  file: File,
+  userId: string
+): Promise<Photo> => {
+  try {
+    // Generate unique filename
+    const timestamp = Date.now()
+    const extension = file.name.split('.').pop()
+    const filename = `${artifactId}_${timestamp}.${extension}`
+    
+    // Create storage reference
+    const storageRef = ref(storage, `artifacts/${artifactId}/photos/${filename}`)
+    
+    // Upload file
+    const snapshot = await uploadBytes(storageRef, file, {
+      contentType: file.type
+    })
+    
+    // Get download URL
+    const url = await getDownloadURL(snapshot.ref)
+    
+    // Create image element to get dimensions
+    const img = new Image()
+    img.src = URL.createObjectURL(file)
+    await new Promise((resolve) => { img.onload = resolve })
+    
+    // Create photo object
+    const photo: Photo = {
+      id: `${artifactId}_${timestamp}`,
+      artifactId,
+      url,
+      filename: file.name,
+      size: file.size,
+      mimeType: file.type,
+      width: img.width,
+      height: img.height,
+      takenAt: new Date().toISOString(),
+      uploadedBy: userId,
+      uploadedAt: new Date().toISOString(),
+      isThumbnail: false
+    }
+    
+    // Clean up
+    URL.revokeObjectURL(img.src)
+    
+    return photo
+  } catch (error) {
+    console.error('Error uploading photo:', error)
+    throw error
+  }
+}
+
+/**
  * Create a new artifact in Firestore
  */
 export const createArtifact = async (
@@ -56,22 +118,59 @@ export const createArtifact = async (
       throw new Error('User must be authenticated to create artifacts')
     }
 
-    // Prepare artifact data with metadata (without QR code first)
+    // Validate photos
+    if (!data.photos || data.photos.length === 0) {
+      throw new Error('At least one photo is required')
+    }
+
+    // Prepare artifact data without photos first
+    const { photos, ...artifactFields } = data
     const artifactData = {
-      ...data,
+      ...artifactFields,
       createdBy: user.uid,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       isDeleted: false,
       version: 1,
       qrCodeUrl: null, // Will be updated after document creation
-      photoCount: 0
+      photos: [] // Will be updated after photo uploads
     }
 
     // Add to Firestore
     const docRef = await addDoc(collection(db, ARTIFACTS_COLLECTION), artifactData)
     
     console.log('✅ Artifact created successfully with ID:', docRef.id)
+
+    // Upload photos
+    try {
+      console.log(`📸 Uploading ${photos.length} photo(s)...`)
+      const uploadedPhotos: Photo[] = []
+      
+      for (const photoFile of photos) {
+        try {
+          const photo = await uploadPhoto(docRef.id, photoFile, user.uid)
+          uploadedPhotos.push(photo)
+          console.log(`✅ Photo uploaded: ${photo.filename}`)
+        } catch (photoError) {
+          console.error(`❌ Failed to upload photo: ${photoFile.name}`, photoError)
+        }
+      }
+
+      // Update artifact with photos
+      if (uploadedPhotos.length > 0) {
+        await updateDoc(doc(db, ARTIFACTS_COLLECTION, docRef.id), {
+          photos: uploadedPhotos
+        })
+        console.log(`✅ ${uploadedPhotos.length} photo(s) uploaded successfully`)
+      } else {
+        // If no photos were uploaded successfully, we might want to handle this
+        console.warn('⚠️ No photos were uploaded successfully')
+      }
+    } catch (photoError) {
+      console.error('❌ Error uploading photos:', photoError)
+      // Artifact was created but photos failed - you may want to handle this differently
+      throw new Error('Artifact created but photo upload failed. Please try adding photos later.')
+    }
 
     // Generate and update QR code URL
     try {
@@ -167,22 +266,48 @@ export const updateArtifact = async (
 
     const docRef = doc(db, ARTIFACTS_COLLECTION, id)
     
-    // Get current version
+    // Get current version and existing data
     const docSnap = await getDoc(docRef)
     if (!docSnap.exists()) {
       throw new Error('Artifact not found')
     }
 
     const currentVersion = docSnap.data().version || 1
+    const existingPhotos = docSnap.data().photos || []
+
+    // Separate photos from other data
+    const { photos, ...otherData } = data
+
+    // Upload new photos if provided
+    let updatedPhotos = existingPhotos
+    if (photos && photos.length > 0) {
+      console.log(`📸 Uploading ${photos.length} new photo(s)...`)
+      const newUploadedPhotos: Photo[] = []
+      
+      for (const photoFile of photos) {
+        try {
+          const photo = await uploadPhoto(id, photoFile, user.uid)
+          newUploadedPhotos.push(photo)
+          console.log(`✅ Photo uploaded: ${photo.filename}`)
+        } catch (photoError) {
+          console.error(`❌ Failed to upload photo: ${photoFile.name}`, photoError)
+        }
+      }
+
+      // Append new photos to existing ones
+      updatedPhotos = [...existingPhotos, ...newUploadedPhotos]
+      console.log(`✅ ${newUploadedPhotos.length} new photo(s) uploaded successfully`)
+    }
 
     // Filter out undefined values (Firestore doesn't allow undefined)
     const cleanData = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined)
+      Object.entries(otherData).filter(([_, value]) => value !== undefined)
     )
 
     // Update with new data and increment version
     await updateDoc(docRef, {
       ...cleanData,
+      photos: updatedPhotos,
       updatedAt: serverTimestamp(),
       updatedBy: user.uid,
       version: currentVersion + 1
