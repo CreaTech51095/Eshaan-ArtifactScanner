@@ -16,6 +16,7 @@ const ArtifactEditPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [initialData, setInitialData] = useState<Partial<CreateArtifactRequest>>()
+  const [existingPhotos, setExistingPhotos] = useState<any[]>([])
 
   useEffect(() => {
     const loadArtifact = async () => {
@@ -58,6 +59,9 @@ const ArtifactEditPage: React.FC = () => {
           condition: artifact.condition,
           notes: artifact.notes || ''
         })
+        
+        // Store existing photos
+        setExistingPhotos(artifact.photos || [])
       } catch (error) {
         console.error('Error loading artifact:', error)
         toast.error('Failed to load artifact')
@@ -143,6 +147,7 @@ const ArtifactEditPage: React.FC = () => {
               onSubmit={handleSubmit} 
               loading={saving}
               initialData={initialData}
+              existingPhotos={existingPhotos}
               isEditMode={true}
             />
           </div>

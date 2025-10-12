@@ -276,10 +276,16 @@ export const updateArtifact = async (
     const existingPhotos = docSnap.data().photos || []
 
     // Separate photos from other data
-    const { photos, ...otherData } = data
+    const { photos, photosToKeep, ...otherData } = data
+
+    // Filter existing photos based on photosToKeep (if provided)
+    let updatedPhotos = existingPhotos
+    if (photosToKeep !== undefined) {
+      updatedPhotos = existingPhotos.filter((photo: Photo) => photosToKeep.includes(photo.id))
+      console.log(`📸 Keeping ${updatedPhotos.length} of ${existingPhotos.length} existing photos`)
+    }
 
     // Upload new photos if provided
-    let updatedPhotos = existingPhotos
     if (photos && photos.length > 0) {
       console.log(`📸 Uploading ${photos.length} new photo(s)...`)
       const newUploadedPhotos: Photo[] = []
@@ -295,7 +301,7 @@ export const updateArtifact = async (
       }
 
       // Append new photos to existing ones
-      updatedPhotos = [...existingPhotos, ...newUploadedPhotos]
+      updatedPhotos = [...updatedPhotos, ...newUploadedPhotos]
       console.log(`✅ ${newUploadedPhotos.length} new photo(s) uploaded successfully`)
     }
 

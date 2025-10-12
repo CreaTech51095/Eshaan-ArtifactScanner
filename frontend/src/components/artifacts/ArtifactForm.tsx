@@ -7,9 +7,10 @@ import { SUPPORTED_IMAGE_TYPES, MAX_FILE_SIZE } from '../../types/photo'
 import CameraCapture from './CameraCapture'
 
 interface ArtifactFormProps {
-  onSubmit: (data: CreateArtifactRequest) => void
+  onSubmit: (data: CreateArtifactRequest & { photosToKeep?: string[] }) => void
   loading?: boolean
   initialData?: Partial<CreateArtifactRequest>
+  existingPhotos?: any[]
   isEditMode?: boolean
 }
 
@@ -17,6 +18,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   onSubmit, 
   loading = false, 
   initialData,
+  existingPhotos = [],
   isEditMode = false
 }) => {
   const {
@@ -32,6 +34,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [photoPreviewUrls, setPhotoPreviewUrls] = useState<string[]>([])
   const [photoError, setPhotoError] = useState<string>('')
   const [isCameraOpen, setIsCameraOpen] = useState(false)
+  const [keptPhotoIds, setKeptPhotoIds] = useState<string[]>(existingPhotos.map(p => p.id))
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +85,19 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
     setPhotoPreviewUrls(newPreviewUrls)
     setValue('photos', newPhotos)
     
-    if (newPhotos.length === 0) {
+    if (!isEditMode && newPhotos.length === 0 && keptPhotoIds.length === 0) {
       setPhotoError('At least one photo is required')
+    }
+  }
+
+  const removeExistingPhoto = (photoId: string) => {
+    const newKeptPhotoIds = keptPhotoIds.filter(id => id !== photoId)
+    setKeptPhotoIds(newKeptPhotoIds)
+    
+    if (isEditMode && selectedPhotos.length === 0 && newKeptPhotoIds.length === 0) {
+      setPhotoError('At least one photo is required')
+    } else {
+      setPhotoError('')
     }
   }
 
@@ -105,12 +119,18 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   }
 
   const handleFormSubmit = (data: CreateArtifactRequest) => {
-    // Only require photos for new artifacts, not when editing
-    if (!isEditMode && selectedPhotos.length === 0) {
+    // Require at least one photo (existing or new)
+    const totalPhotos = (isEditMode ? keptPhotoIds.length : 0) + selectedPhotos.length
+    if (totalPhotos === 0) {
       setPhotoError('At least one photo is required')
       return
     }
-    onSubmit({ ...data, photos: selectedPhotos })
+    
+    onSubmit({ 
+      ...data, 
+      photos: selectedPhotos,
+      ...(isEditMode && { photosToKeep: keptPhotoIds })
+    })
   }
 
   return (
@@ -266,7 +286,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                 className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
               >
                 <Upload className="w-4 h-4" />
-                Choose Photos
+                {photoPreviewUrls.length > 0 ? 'Add More Photos' : 'Choose Photos'}
               </label>
               <input
                 id="photo-upload"
@@ -287,9 +307,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               </button>
             </div>
             
-            <span className="text-sm text-gray-500">
-              JPEG, PNG, or WebP (max 10MB each)
-            </span>
+            <div className="flex flex-col text-sm text-gray-500">
+              <span>JPEG, PNG, or WebP (max 10MB each)</span>
+              {photoPreviewUrls.length > 0 && (
+                <span className="text-blue-600 font-medium">{photoPreviewUrls.length} photo{photoPreviewUrls.length !== 1 ? 's' : ''} selected</span>
+              )}
+            </div>
           </div>
 
           {/* Photo Error */}
@@ -297,34 +320,87 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
             <p className="text-red-600 text-sm">{photoError}</p>
           )}
 
-          {/* Photo Previews */}
+          {/* Existing Photos (Edit Mode) */}
+          {isEditMode && existingPhotos.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-gray-700">
+                Current Photos ({keptPhotoIds.length} of {existingPhotos.length})
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {existingPhotos.map((photo) => {
+                  const isKept = keptPhotoIds.includes(photo.id)
+                  return (
+                    <div 
+                      key={photo.id} 
+                      className={`relative group ${!isKept ? 'opacity-40' : ''}`}
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photo.filename}
+                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                      />
+                      {isKept ? (
+                        <button
+                          type="button"
+                          onClick={() => removeExistingPhoto(photo.id)}
+                          className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Remove photo"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-lg">
+                          <span className="text-white text-sm font-medium">Removed</span>
+                        </div>
+                      )}
+                      <div className="absolute bottom-2 left-2 px-2 py-1 bg-black bg-opacity-60 text-white text-xs rounded max-w-[90%] truncate">
+                        {photo.filename}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* New Photo Previews */}
           {photoPreviewUrls.length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {photoPreviewUrls.map((url, index) => (
-                <div key={index} className="relative group">
-                  <img
-                    src={url}
-                    alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removePhoto(index)}
-                    className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Remove photo"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                  <div className="absolute bottom-2 left-2 px-2 py-1 bg-black bg-opacity-60 text-white text-xs rounded">
-                    {selectedPhotos[index]?.name}
+            <div className="space-y-2">
+              {isEditMode && (
+                <h4 className="text-sm font-medium text-gray-700">
+                  New Photos ({photoPreviewUrls.length})
+                </h4>
+              )}
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {photoPreviewUrls.map((url, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={url}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-lg border-2 border-blue-300"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removePhoto(index)}
+                      className="absolute top-2 right-2 p-1 bg-red-600 text-white rounded-full hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove photo"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    <div className="absolute bottom-2 left-2 px-2 py-1 bg-blue-600 bg-opacity-90 text-white text-xs rounded max-w-[90%] truncate">
+                      {selectedPhotos[index]?.name}
+                    </div>
+                    <div className="absolute top-2 left-2 px-2 py-1 bg-green-600 text-white text-xs rounded">
+                      NEW
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           )}
 
           {/* No Photos Message */}
-          {photoPreviewUrls.length === 0 && (
+          {photoPreviewUrls.length === 0 && (!isEditMode || existingPhotos.length === 0) && (
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
               <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
               <p className="text-gray-500">
@@ -333,7 +409,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               <p className="text-sm text-gray-400 mt-1">
                 {isEditMode 
                   ? 'Optionally add more photos to the artifact' 
-                  : 'Upload at least one photo of the artifact'}
+                  : 'You can add multiple photos - just select multiple files or add one at a time'}
               </p>
             </div>
           )}

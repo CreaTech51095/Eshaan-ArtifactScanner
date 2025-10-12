@@ -52,6 +52,7 @@ export interface UpdateArtifactRequest {
   discoverySite?: string
   location?: string
   photos?: File[]
+  photosToKeep?: string[] // IDs of existing photos to keep
   metadata?: Record<string, any>
   version: number
 }
