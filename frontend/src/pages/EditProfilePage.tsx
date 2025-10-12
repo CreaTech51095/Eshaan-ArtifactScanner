@@ -12,12 +12,14 @@ interface ProfileFormData {
   displayName: string
   username: string
   email: string
+  role: string
 }
 
 const EditProfilePage: React.FC = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
   const [saving, setSaving] = useState(false)
+  const [showRoleChange, setShowRoleChange] = useState(false)
 
   const {
     register,
@@ -27,7 +29,8 @@ const EditProfilePage: React.FC = () => {
     defaultValues: {
       displayName: user?.displayName || '',
       username: user?.username || '',
-      email: user?.email || ''
+      email: user?.email || '',
+      role: user?.role || ''
     }
   })
 
@@ -62,11 +65,22 @@ const EditProfilePage: React.FC = () => {
 
       // Update Firestore user document
       const userRef = doc(db, 'users', user.id)
-      await updateDoc(userRef, {
+      const updates: any = {
         displayName: data.displayName,
         username: data.username,
         email: data.email
-      })
+      }
+      
+      // Only update role if it changed and is a valid downgrade
+      if (data.role !== user.role && user.role === 'archaeologist' && data.role === 'researcher') {
+        updates.role = data.role
+        toast.success('Role changed to Researcher. You now have read-only access.', {
+          duration: 5000,
+          icon: '⚠️'
+        })
+      }
+      
+      await updateDoc(userRef, updates)
 
       toast.success('Profile updated successfully!', {
         duration: 3000,
@@ -194,23 +208,58 @@ const EditProfilePage: React.FC = () => {
               </p>
             </div>
 
-            {/* Role (Read-only) */}
+            {/* Role */}
             <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
                 <Shield className="w-4 h-4 inline mr-1" />
                 Role
               </label>
-              <input
-                type="text"
-                id="role"
-                value={user.role}
-                className="input bg-gray-100 cursor-not-allowed"
-                disabled
-                readOnly
-              />
-              <p className="text-sm text-gray-500 mt-1">
-                Role cannot be changed. Contact an administrator if you need a different role.
-              </p>
+              
+              {user.role === 'archaeologist' ? (
+                <>
+                  <select
+                    {...register('role')}
+                    id="role"
+                    className="input"
+                    onChange={(e) => setShowRoleChange(e.target.value !== user.role)}
+                  >
+                    <option value="archaeologist">Archaeologist (Full Access)</option>
+                    <option value="researcher">Researcher (Read-Only)</option>
+                  </select>
+                  
+                  {showRoleChange && (
+                    <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+                      <p className="text-yellow-800 text-sm">
+                        <strong>⚠️ Downgrading to Researcher:</strong> You will lose the ability to create and edit artifacts. 
+                        You'll need to contact an administrator to upgrade back to Archaeologist.
+                      </p>
+                    </div>
+                  )}
+                  
+                  <p className="text-sm text-gray-500 mt-1">
+                    You can downgrade to Researcher for read-only access. Contact an administrator to upgrade to Admin.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    id="role"
+                    value={user.role === 'researcher' ? 'Researcher (Read-Only)' : user.role === 'admin' ? 'Administrator' : user.role === 'guest' ? 'Guest' : user.role}
+                    className="input bg-gray-100 cursor-not-allowed"
+                    disabled
+                    readOnly
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                    {user.role === 'researcher' 
+                      ? 'Contact an administrator to upgrade to Archaeologist or Admin roles.'
+                      : user.role === 'guest'
+                      ? 'Guest accounts have read-only access. Create a full account for more features.'
+                      : 'Contact an administrator if you need a different role.'
+                    }
+                  </p>
+                </>
+              )}
             </div>
 
             {/* Action Buttons */}
