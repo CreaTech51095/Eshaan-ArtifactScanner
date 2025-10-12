@@ -130,8 +130,8 @@ const ArtifactDetailPage: React.FC = () => {
                     </button>
                   </>
                 )}
-                {/* Only admins can delete */}
-                {user && permissions?.canDeleteArtifacts && user.role === 'admin' && (
+                {/* Admins can delete any artifact, archaeologists can delete their own */}
+                {user && permissions?.canDeleteArtifacts && (user.id === artifact.createdBy || user.role === 'admin') && (
                   <button
                     onClick={handleDelete}
                     disabled={deleting}

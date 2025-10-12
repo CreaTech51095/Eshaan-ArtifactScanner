@@ -30,11 +30,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       clearError()
       
       const { confirmPassword, ...userData } = data
-      // Always set role to 'archaeologist' for new accounts
-      userData.role = 'archaeologist'
+      // Role is already set from the form dropdown
       await registerUser(userData)
       
-      toast.success('Registration successful! Your account has been created with Archaeologist access.')
+      const roleDisplay = userData.role === 'archaeologist' ? 'Archaeologist' : 'Researcher'
+      toast.success(`Registration successful! Your account has been created with ${roleDisplay} access.`)
       
       // Explicitly navigate to dashboard after successful registration
       setTimeout(() => {
@@ -139,10 +139,37 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
             )}
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-            <p className="text-blue-800 text-sm">
-              <strong>📋 Account Type:</strong> Your account will be created with <strong>Archaeologist</strong> access. 
-              You will be able to create, edit, and manage artifacts. To request Admin access, visit your profile settings after registration.
+          <div>
+            <label htmlFor="role" className="block text-sm font-medium text-secondary-700 mb-1">
+              Account Type *
+            </label>
+            <select
+              {...register('role', {
+                required: 'Please select an account type'
+              })}
+              id="role"
+              className="input"
+              defaultValue="archaeologist"
+            >
+              <option value="archaeologist">Archaeologist (Full Access)</option>
+              <option value="researcher">Researcher (Read-Only)</option>
+            </select>
+            {errors.role && (
+              <p className="text-red-600 text-sm mt-1">{errors.role.message}</p>
+            )}
+            
+            <div className="mt-2 space-y-2">
+              <div className="p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+                <strong>Archaeologist:</strong> Create, edit, delete, and manage your own artifacts with photo uploads.
+              </div>
+              <div className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700">
+                <strong>Researcher:</strong> View and browse artifacts (read-only access).
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-500 mt-2">
+              💡 You can change between Archaeologist and Researcher roles anytime in your profile settings. 
+              Contact an administrator to request Admin access.
             </p>
           </div>
 
