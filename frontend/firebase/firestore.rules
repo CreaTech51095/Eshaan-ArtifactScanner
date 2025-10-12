@@ -27,8 +27,9 @@ service cloud.firestore {
       // Only artifact creator or admin can edit
       allow update: if request.auth != null && 
         (getUserRole() == 'admin' || resource.data.createdBy == request.auth.uid);
+      // Admins can delete any artifact, archaeologists can delete their own
       allow delete: if request.auth != null && 
-        getUserRole() == 'admin';
+        (getUserRole() == 'admin' || (getUserRole() == 'archaeologist' && resource.data.createdBy == request.auth.uid));
     }
     
     // Photos: same rules as artifacts
