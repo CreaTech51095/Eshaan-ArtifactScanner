@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { Plus, Search, Package, Image } from 'lucide-react'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/common/LoadingSpinner'
-import { getArtifacts } from '../services/artifacts'
+import { getArtifacts } from '../services/artifactsOffline'
 import { Artifact } from '../types/artifact'
 import { useAuth } from '../hooks/useAuth'
 import { getUserPermissions } from '../types/user'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const ArtifactListPage: React.FC = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const isOnline = useOnlineStatus()
   const permissions = user ? getUserPermissions(user.role) : null
   const [artifacts, setArtifacts] = useState<Artifact[]>([])
   const [loading, setLoading] = useState(true)

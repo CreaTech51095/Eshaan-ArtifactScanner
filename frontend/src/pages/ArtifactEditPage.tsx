@@ -4,15 +4,17 @@ import { ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ArtifactForm from '../components/artifacts/ArtifactForm'
 import LoadingSpinner from '../components/common/LoadingSpinner'
-import { getArtifact, updateArtifact } from '../services/artifacts'
+import { getArtifact, updateArtifact } from '../services/artifactsOffline'
 import { CreateArtifactRequest } from '../types/artifact'
 import { useAuth } from '../hooks/useAuth'
 import { getUserPermissions } from '../types/user'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const ArtifactEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const isOnline = useOnlineStatus()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [initialData, setInitialData] = useState<Partial<CreateArtifactRequest>>()
