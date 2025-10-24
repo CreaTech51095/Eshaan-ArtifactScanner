@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
+import { useOfflineSyncContext } from './contexts/OfflineSyncContext'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ArtifactListPage from './pages/ArtifactListPage'
@@ -17,9 +18,11 @@ import UserManagementPage from './pages/UserManagementPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
+import OfflineIndicator from './components/common/OfflineIndicator'
 
 function App() {
   const { user, loading } = useAuth()
+  const { syncStatus } = useOfflineSyncContext()
 
   if (loading) {
     return <LoadingSpinner />
@@ -29,6 +32,14 @@ function App() {
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
         {user && <AppHeader />}
+        {user && (
+          <OfflineIndicator 
+            showOnlineState={true}
+            isSyncing={syncStatus.isSyncing}
+            lastSyncAt={syncStatus.lastSyncAt}
+            pendingChanges={syncStatus.pendingChanges}
+          />
+        )}
         <Routes>
           <Route 
             path="/login" 

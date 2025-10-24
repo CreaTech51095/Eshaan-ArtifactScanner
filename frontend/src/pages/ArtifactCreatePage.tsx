@@ -4,13 +4,15 @@ import { ArrowLeft } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ArtifactForm from '../components/artifacts/ArtifactForm'
 import { CreateArtifactRequest } from '../types/artifact'
-import { createArtifact } from '../services/artifacts'
+import { createArtifact } from '../services/artifactsOffline'
 import { useAuth } from '../hooks/useAuth'
 import { getUserPermissions } from '../types/user'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const ArtifactCreatePage: React.FC = () => {
   const navigate = useNavigate()
   const { user } = useAuth()
+  const isOnline = useOnlineStatus()
   const [loading, setLoading] = React.useState(false)
 
   // Redirect if user doesn't have permission to create artifacts
@@ -29,14 +31,21 @@ const ArtifactCreatePage: React.FC = () => {
     try {
       console.log('Creating artifact:', data)
       
-      // Create artifact in Firebase
+      // Create artifact (works both online and offline!)
       const artifactId = await createArtifact(data)
       
-      // Show success message
-      toast.success('Artifact created successfully!', {
-        duration: 3000,
-        icon: '✅'
-      })
+      // Show success message based on connection status
+      if (isOnline) {
+        toast.success('Artifact created and synced!', {
+          duration: 3000,
+          icon: '✅'
+        })
+      } else {
+        toast.success('Artifact saved offline. Will sync when online.', {
+          duration: 5000,
+          icon: '📴'
+        })
+      }
       
       // Navigate to the artifact detail page
       navigate(`/artifacts/${artifactId}`)

@@ -4,15 +4,17 @@ import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Package, QrCode, MessageSqua
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ArtifactQRCode from '../components/artifacts/ArtifactQRCode'
-import { getArtifact, deleteArtifact } from '../services/artifacts'
+import { getArtifact, deleteArtifact } from '../services/artifactsOffline'
 import { Artifact } from '../types/artifact'
 import { useAuth } from '../hooks/useAuth'
 import { getUserPermissions } from '../types/user'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const ArtifactDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
+  const isOnline = useOnlineStatus()
   const permissions = user ? getUserPermissions(user.role) : null
   const [artifact, setArtifact] = useState<Artifact | null>(null)
   const [loading, setLoading] = useState(true)
