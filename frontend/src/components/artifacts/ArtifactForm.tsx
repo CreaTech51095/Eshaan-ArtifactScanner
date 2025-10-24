@@ -84,21 +84,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
     setSelectedPhotos(newPhotos)
     setPhotoPreviewUrls(newPreviewUrls)
     setValue('photos', newPhotos)
-    
-    if (!isEditMode && newPhotos.length === 0 && keptPhotoIds.length === 0) {
-      setPhotoError('At least one photo is required')
-    }
   }
 
   const removeExistingPhoto = (photoId: string) => {
     const newKeptPhotoIds = keptPhotoIds.filter(id => id !== photoId)
     setKeptPhotoIds(newKeptPhotoIds)
-    
-    if (isEditMode && selectedPhotos.length === 0 && newKeptPhotoIds.length === 0) {
-      setPhotoError('At least one photo is required')
-    } else {
-      setPhotoError('')
-    }
+    setPhotoError('')
   }
 
   const handleCameraCapture = (file: File) => {
@@ -119,13 +110,6 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   }
 
   const handleFormSubmit = (data: CreateArtifactRequest) => {
-    // Require at least one photo (existing or new)
-    const totalPhotos = (isEditMode ? keptPhotoIds.length : 0) + selectedPhotos.length
-    if (totalPhotos === 0) {
-      setPhotoError('At least one photo is required')
-      return
-    }
-    
     onSubmit({ 
       ...data, 
       photos: selectedPhotos,
@@ -166,11 +150,10 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-          Description *
+          Description
         </label>
         <textarea
           {...register('description', {
-            required: 'Description is required',
             maxLength: {
               value: 2000,
               message: 'Description must be less than 2000 characters'
@@ -188,12 +171,10 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label htmlFor="artifactType" className="block text-sm font-medium text-gray-700 mb-1">
-          Artifact Type *
+          Artifact Type
         </label>
         <select
-          {...register('artifactType', {
-            required: 'Artifact type is required'
-          })}
+          {...register('artifactType')}
           id="artifactType"
           className="input"
         >
@@ -211,12 +192,10 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label htmlFor="discoveryDate" className="block text-sm font-medium text-gray-700 mb-1">
-          Discovery Date *
+          Discovery Date
         </label>
         <input
-          {...register('discoveryDate', {
-            required: 'Discovery date is required'
-          })}
+          {...register('discoveryDate')}
           type="date"
           id="discoveryDate"
           className="input"
@@ -228,11 +207,10 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label htmlFor="discoverySite" className="block text-sm font-medium text-gray-700 mb-1">
-          Discovery Site *
+          Discovery Site
         </label>
         <input
           {...register('discoverySite', {
-            required: 'Discovery site is required',
             maxLength: {
               value: 200,
               message: 'Discovery site must be less than 200 characters'
@@ -250,11 +228,10 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-          Current Location *
+          Current Location
         </label>
         <input
           {...register('location', {
-            required: 'Current location is required',
             maxLength: {
               value: 200,
               message: 'Location must be less than 200 characters'
@@ -272,8 +249,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Photos {!isEditMode && '*'} <span className="text-gray-500 font-normal">
-            {isEditMode ? '(Optional - add more photos)' : '(At least 1 required)'}
+          Photos <span className="text-gray-500 font-normal">
+            (Optional)
           </span>
         </label>
         
@@ -407,9 +384,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                 {isEditMode ? 'No new photos selected' : 'No photos added yet'}
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                {isEditMode 
-                  ? 'Optionally add more photos to the artifact' 
-                  : 'You can add multiple photos - just select multiple files or add one at a time'}
+                Photos are optional. You can add multiple photos - just select multiple files or add one at a time
               </p>
             </div>
           )}
