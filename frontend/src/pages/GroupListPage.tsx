@@ -57,13 +57,22 @@ const GroupListPage: React.FC = () => {
               Collaborate with your team on artifacts
             </p>
           </div>
-          <button
-            onClick={() => navigate('/groups/new')}
-            className="btn btn-primary flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Create Group
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => navigate('/groups/browse/public')}
+              className="btn btn-secondary flex items-center gap-2"
+            >
+              <Search className="w-4 h-4" />
+              Browse Public Groups
+            </button>
+            <button
+              onClick={() => navigate('/groups/new')}
+              className="btn btn-primary flex items-center gap-2"
+            >
+              <Plus className="w-4 h-4" />
+              Create Group
+            </button>
+          </div>
         </div>
 
         {/* Search Bar */}

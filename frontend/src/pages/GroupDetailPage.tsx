@@ -11,9 +11,10 @@ import { Artifact } from '../types/artifact'
 import GroupMembersList from '../components/groups/GroupMembersList'
 import AddMemberDialog from '../components/groups/AddMemberDialog'
 import GroupSettingsForm from '../components/groups/GroupSettingsForm'
+import PendingRequestsList from '../components/groups/PendingRequestsList'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 
-type TabType = 'overview' | 'artifacts' | 'members' | 'settings'
+type TabType = 'overview' | 'artifacts' | 'members' | 'requests' | 'settings'
 
 const GroupDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -191,6 +192,18 @@ const GroupDetailPage: React.FC = () => {
             </button>
             {canManageGroup && (
               <button
+                onClick={() => setActiveTab('requests')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'requests'
+                    ? 'border-primary-500 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Join Requests
+              </button>
+            )}
+            {canManageGroup && (
+              <button
                 onClick={() => setActiveTab('settings')}
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'settings'
@@ -299,6 +312,15 @@ const GroupDetailPage: React.FC = () => {
                   currentUserId={user.id}
                   onAddMember={() => setShowAddMemberDialog(true)}
                 />
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'requests' && canManageGroup && id && (
+            <div className="card">
+              <div className="card-content">
+                <h3 className="text-lg font-semibold mb-4">Pending Join Requests</h3>
+                <PendingRequestsList groupId={id} onRequestReviewed={loadGroupData} />
               </div>
             </div>
           )}

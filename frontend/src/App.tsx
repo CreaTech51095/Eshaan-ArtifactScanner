@@ -19,6 +19,7 @@ import UserManagementPage from './pages/UserManagementPage'
 import GroupListPage from './pages/GroupListPage'
 import GroupCreatePage from './pages/GroupCreatePage'
 import GroupDetailPage from './pages/GroupDetailPage'
+import BrowseGroupsPage from './pages/BrowseGroupsPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
@@ -113,6 +114,10 @@ function App() {
           <Route 
             path="/groups/:id" 
             element={user ? <GroupDetailPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/groups/browse/public" 
+            element={user ? <BrowseGroupsPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
             path="/" 
