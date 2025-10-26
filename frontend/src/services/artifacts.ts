@@ -133,7 +133,8 @@ export const createArtifact = async (
       isDeleted: false,
       version: 1,
       qrCodeUrl: null, // Will be updated after document creation
-      photos: [] // Will be updated after photo uploads
+      photos: [], // Will be updated after photo uploads
+      groupId: data.groupId || null // Optional group assignment
     }
 
     // Add to Firestore
@@ -441,6 +442,56 @@ export const getArtifactsBySite = async (
     return artifacts
   } catch (error) {
     console.error('❌ Error getting artifacts by site:', error)
+    throw error
+  }
+}
+
+/**
+ * Get artifacts by group
+ */
+export const getArtifactsByGroup = async (
+  groupId: string
+): Promise<Artifact[]> => {
+  try {
+    const q = query(
+      collection(db, ARTIFACTS_COLLECTION),
+      where('isDeleted', '==', false),
+      where('groupId', '==', groupId)
+    )
+
+    const querySnapshot = await getDocs(q)
+    const artifacts: Artifact[] = []
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data()
+      artifacts.push({
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || new Date(),
+        updatedAt: data.updatedAt?.toDate?.() || new Date(),
+      } as Artifact)
+    })
+
+    // Sort client-side by createdAt descending
+    artifacts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
+    return artifacts
+  } catch (error) {
+    console.error('❌ Error getting artifacts by group:', error)
+    throw error
+  }
+}
+
+/**
+ * Get artifacts without a group (uncategorized)
+ */
+export const getUncategorizedArtifacts = async (): Promise<Artifact[]> => {
+  try {
+    // Get all artifacts and filter client-side for those without groupId
+    const allArtifacts = await getArtifacts()
+    return allArtifacts.filter(artifact => !artifact.groupId)
+  } catch (error) {
+    console.error('❌ Error getting uncategorized artifacts:', error)
     throw error
   }
 }

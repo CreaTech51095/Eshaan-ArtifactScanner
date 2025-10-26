@@ -110,3 +110,37 @@ export const getUserPermissions = (role: UserRole): UserPermissions => {
       }
   }
 }
+
+// Get combined permissions considering both global role and group membership
+// Admin role always has full permissions, group permissions are checked for others
+export const getUserPermissionsInGroup = (
+  globalRole: UserRole,
+  groupPermissions?: {
+    canCreateArtifacts: boolean
+    canEditArtifacts: boolean
+    canDeleteArtifacts: boolean
+    canViewArtifacts: boolean
+  }
+): UserPermissions => {
+  const globalPerms = getUserPermissions(globalRole)
+  
+  // Admins always have full permissions
+  if (globalRole === 'admin') {
+    return globalPerms
+  }
+  
+  // If no group permissions provided, return global permissions
+  if (!groupPermissions) {
+    return globalPerms
+  }
+  
+  // Combine global and group permissions (both must be true)
+  return {
+    canCreateArtifacts: globalPerms.canCreateArtifacts && groupPermissions.canCreateArtifacts,
+    canEditArtifacts: globalPerms.canEditArtifacts && groupPermissions.canEditArtifacts,
+    canDeleteArtifacts: globalPerms.canDeleteArtifacts && groupPermissions.canDeleteArtifacts,
+    canUploadPhotos: globalPerms.canUploadPhotos && groupPermissions.canCreateArtifacts,
+    canDeletePhotos: globalPerms.canDeletePhotos && groupPermissions.canDeleteArtifacts,
+    canManageUsers: globalPerms.canManageUsers,
+  }
+}

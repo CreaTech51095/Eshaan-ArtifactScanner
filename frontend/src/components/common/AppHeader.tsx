@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Package } from 'lucide-react'
+import { Package, Users } from 'lucide-react'
 import UserProfileMenu from './UserProfileMenu'
 import { useAuth } from '../../hooks/useAuth'
 
@@ -34,6 +34,13 @@ const AppHeader: React.FC = () => {
                 className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors"
               >
                 Artifacts
+              </Link>
+              <Link 
+                to="/groups" 
+                className="text-sm font-medium text-gray-700 hover:text-primary-600 transition-colors flex items-center gap-1"
+              >
+                <Users className="w-4 h-4" />
+                Groups
               </Link>
               <Link 
                 to="/scanner" 

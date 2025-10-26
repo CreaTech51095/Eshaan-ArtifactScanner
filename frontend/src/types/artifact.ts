@@ -31,6 +31,7 @@ export interface Artifact {
   lastModifiedAt: string
   version: number
   isDeleted: boolean
+  groupId?: string // Optional: artifacts can belong to a group
 }
 
 export interface CreateArtifactRequest {
@@ -42,6 +43,7 @@ export interface CreateArtifactRequest {
   location: string
   photos: File[]
   metadata?: Record<string, any>
+  groupId?: string // Optional: assign artifact to a group
 }
 
 export interface UpdateArtifactRequest {

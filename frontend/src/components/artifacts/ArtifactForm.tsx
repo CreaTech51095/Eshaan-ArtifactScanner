@@ -1,10 +1,14 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { CreateArtifactRequest } from '../../types/artifact'
 import { ARTIFACT_TYPES } from '../../types/artifact'
 import { Camera, X, Upload } from 'lucide-react'
 import { SUPPORTED_IMAGE_TYPES, MAX_FILE_SIZE } from '../../types/photo'
 import CameraCapture from './CameraCapture'
+import GroupSelector from '../groups/GroupSelector'
+import { Group } from '../../types/group'
+import { getUserGroups } from '../../services/groups'
+import { useAuth } from '../../hooks/useAuth'
 
 interface ArtifactFormProps {
   onSubmit: (data: CreateArtifactRequest & { photosToKeep?: string[] }) => void
@@ -21,6 +25,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   existingPhotos = [],
   isEditMode = false
 }) => {
+  const { user } = useAuth()
   const {
     register,
     handleSubmit,
@@ -35,7 +40,23 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [photoError, setPhotoError] = useState<string>('')
   const [isCameraOpen, setIsCameraOpen] = useState(false)
   const [keptPhotoIds, setKeptPhotoIds] = useState<string[]>(existingPhotos.map(p => p.id))
+  const [userGroups, setUserGroups] = useState<Group[]>([])
+  const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>(initialData?.groupId)
   const cameraInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const loadUserGroups = async () => {
+      if (user) {
+        try {
+          const groups = await getUserGroups(user.id)
+          setUserGroups(groups)
+        } catch (error) {
+          console.error('Error loading user groups:', error)
+        }
+      }
+    }
+    loadUserGroups()
+  }, [user])
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -113,6 +134,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
     onSubmit({ 
       ...data, 
       photos: selectedPhotos,
+      groupId: selectedGroupId === 'uncategorized' ? undefined : selectedGroupId,
       ...(isEditMode && { photosToKeep: keptPhotoIds })
     })
   }
@@ -246,6 +268,16 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
           <p className="text-red-600 text-sm mt-1">{errors.location.message}</p>
         )}
       </div>
+
+      {/* Group Selection */}
+      <GroupSelector
+        groups={userGroups}
+        selectedGroupId={selectedGroupId}
+        onChange={setSelectedGroupId}
+        label="Group (Optional)"
+        placeholder="Select a group or leave uncategorized"
+        showUncategorized={true}
+      />
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">

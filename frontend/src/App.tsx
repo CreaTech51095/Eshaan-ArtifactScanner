@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import { useOfflineSyncContext } from './contexts/OfflineSyncContext'
+import { GroupProvider } from './contexts/GroupContext'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import ArtifactListPage from './pages/ArtifactListPage'
@@ -15,6 +16,9 @@ import DeleteAccountPage from './pages/DeleteAccountPage'
 import RequestRolePage from './pages/RequestRolePage'
 import AdminPanelPage from './pages/AdminPanelPage'
 import UserManagementPage from './pages/UserManagementPage'
+import GroupListPage from './pages/GroupListPage'
+import GroupCreatePage from './pages/GroupCreatePage'
+import GroupDetailPage from './pages/GroupDetailPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
@@ -30,17 +34,18 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-gray-50">
-        {user && <AppHeader />}
-        {user && (
-          <OfflineIndicator 
-            showOnlineState={true}
-            isSyncing={syncStatus.isSyncing}
-            lastSyncAt={syncStatus.lastSyncAt}
-            pendingChanges={syncStatus.pendingChanges}
-          />
-        )}
-        <Routes>
+      <GroupProvider>
+        <div className="min-h-screen bg-gray-50">
+          {user && <AppHeader />}
+          {user && (
+            <OfflineIndicator 
+              showOnlineState={true}
+              isSyncing={syncStatus.isSyncing}
+              lastSyncAt={syncStatus.lastSyncAt}
+              pendingChanges={syncStatus.pendingChanges}
+            />
+          )}
+          <Routes>
           <Route 
             path="/login" 
             element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
@@ -98,11 +103,24 @@ function App() {
             element={user ? <UserManagementPage /> : <Navigate to="/login" replace />} 
           />
           <Route 
+            path="/groups" 
+            element={user ? <GroupListPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/groups/new" 
+            element={user ? <GroupCreatePage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
+            path="/groups/:id" 
+            element={user ? <GroupDetailPage /> : <Navigate to="/login" replace />} 
+          />
+          <Route 
             path="/" 
             element={<Navigate to={user ? "/dashboard" : "/login"} replace />} 
           />
-        </Routes>
-      </div>
+          </Routes>
+        </div>
+      </GroupProvider>
     </ErrorBoundary>
   )
 }
