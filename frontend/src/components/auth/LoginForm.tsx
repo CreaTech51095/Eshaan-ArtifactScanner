@@ -29,10 +29,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
       await login(data)
       toast.success('Login successful!')
       
-      // Explicitly navigate to dashboard after successful login
-      setTimeout(() => {
-        navigate('/dashboard', { replace: true })
-      }, 100)
+      // Navigate to dashboard after successful login
+      navigate('/dashboard', { replace: true })
       
       onSuccess?.()
     } catch (err: any) {

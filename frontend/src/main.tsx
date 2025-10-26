@@ -4,14 +4,16 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import App from './App.tsx'
 import './index.css'
+import { AuthProvider } from './contexts/AuthContext'
 import { OfflineSyncProvider } from './contexts/OfflineSyncContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <OfflineSyncProvider>
-        <App />
-        <Toaster 
+      <AuthProvider>
+        <OfflineSyncProvider>
+          <App />
+          <Toaster 
           position="top-center"
           toastOptions={{
             duration: 3000,
@@ -35,7 +37,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             },
           }}
         />
-      </OfflineSyncProvider>
+        </OfflineSyncProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )
