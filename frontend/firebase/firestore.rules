@@ -67,26 +67,22 @@ service cloud.firestore {
         (getUserRole() == 'admin' || resource.data.userId == request.auth.uid);
     }
     
-    // Artifacts: group-based access control
+    // Artifacts: accessible by authenticated users, group filtering handled in app
     match /artifacts/{artifactId} {
-      // Read: global admins, or group members with view permission, or artifacts without groups
+      // Read: all authenticated users (group filtering done in application)
       allow read: if request.auth != null && 
-        (getUserRole() == 'admin' || 
-         !('groupId' in resource.data) || 
-         resource.data.groupId == null);
+        (getUserRole() in ['admin', 'archaeologist', 'researcher', 'guest']);
       
-      // Create: global admins or archaeologists with group permissions
+      // Create: admins and archaeologists
       allow create: if request.auth != null && 
-        (getUserRole() == 'admin' || 
-         (getUserRole() == 'archaeologist' && 
-          (!('groupId' in request.resource.data) || request.resource.data.groupId == null)));
+        (getUserRole() in ['admin', 'archaeologist']);
       
-      // Update: global admins, artifact creator, or group members with edit permission
+      // Update: global admins or artifact creator
       allow update: if request.auth != null && 
         (getUserRole() == 'admin' || 
          resource.data.createdBy == request.auth.uid);
       
-      // Delete: global admins, artifact creator, or group admins
+      // Delete: global admins or artifact creator
       allow delete: if request.auth != null && 
         (getUserRole() == 'admin' || 
          resource.data.createdBy == request.auth.uid);
