@@ -106,7 +106,7 @@ export const ARTIFACT_TYPES: ArtifactType[] = [
   { id: 'coin', name: 'Coin', description: 'Ancient coins and currency', icon: '🪙', color: '#CD7F32' },
   { id: 'sculpture', name: 'Sculpture', description: 'Carved or molded figures', icon: '🗿', color: '#D2B48C' },
   { id: 'textile', name: 'Textile', description: 'Fabric, clothing, and woven materials', icon: '🧵', color: '#DEB887' },
-  { id: 'other', name: 'Other', description: 'Miscellaneous artifacts', icon: '📦', color: '#808080' },
+  { id: 'custom', name: 'Custom Type', description: 'Specify your own artifact type', icon: '✏️', color: '#808080' },
 ]
 
 export interface QRCodeData {

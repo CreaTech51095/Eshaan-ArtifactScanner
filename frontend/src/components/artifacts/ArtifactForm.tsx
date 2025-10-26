@@ -42,6 +42,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [keptPhotoIds, setKeptPhotoIds] = useState<string[]>(existingPhotos.map(p => p.id))
   const [userGroups, setUserGroups] = useState<Group[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>(initialData?.groupId)
+  const [artifactTypeSelection, setArtifactTypeSelection] = useState<string>(initialData?.artifactType || '')
+  const [customArtifactType, setCustomArtifactType] = useState<string>('')
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -131,8 +133,19 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   }
 
   const handleFormSubmit = (data: CreateArtifactRequest) => {
+    // Use custom artifact type if "custom" was selected
+    const finalArtifactType = artifactTypeSelection === 'custom' 
+      ? customArtifactType.trim() 
+      : artifactTypeSelection
+
+    if (artifactTypeSelection === 'custom' && !customArtifactType.trim()) {
+      setPhotoError('Please specify a custom artifact type')
+      return
+    }
+
     onSubmit({ 
-      ...data, 
+      ...data,
+      artifactType: finalArtifactType,
       photos: selectedPhotos,
       groupId: selectedGroupId === 'uncategorized' ? undefined : selectedGroupId,
       ...(isEditMode && { photosToKeep: keptPhotoIds })
@@ -196,7 +209,11 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
           Artifact Type
         </label>
         <select
-          {...register('artifactType')}
+          value={artifactTypeSelection}
+          onChange={(e) => {
+            setArtifactTypeSelection(e.target.value)
+            setValue('artifactType', e.target.value)
+          }}
           id="artifactType"
           className="input"
         >
@@ -209,6 +226,27 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
         </select>
         {errors.artifactType && (
           <p className="text-red-600 text-sm mt-1">{errors.artifactType.message}</p>
+        )}
+        
+        {/* Custom Type Input */}
+        {artifactTypeSelection === 'custom' && (
+          <div className="mt-3">
+            <label htmlFor="customType" className="block text-sm font-medium text-gray-700 mb-1">
+              Specify Artifact Type *
+            </label>
+            <input
+              type="text"
+              id="customType"
+              value={customArtifactType}
+              onChange={(e) => setCustomArtifactType(e.target.value)}
+              placeholder="e.g., Manuscript, Bone Fragment, Papyrus..."
+              className="input"
+              maxLength={50}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Enter the specific type of artifact (max 50 characters)
+            </p>
+          </div>
         )}
       </div>
 
