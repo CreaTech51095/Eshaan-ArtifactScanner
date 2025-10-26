@@ -10,6 +10,7 @@ import { Group } from '../types/group'
 import { Artifact } from '../types/artifact'
 import GroupMembersList from '../components/groups/GroupMembersList'
 import AddMemberDialog from '../components/groups/AddMemberDialog'
+import GroupSettingsForm from '../components/groups/GroupSettingsForm'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 
 type TabType = 'overview' | 'artifacts' | 'members' | 'settings'
@@ -303,12 +304,7 @@ const GroupDetailPage: React.FC = () => {
           )}
 
           {activeTab === 'settings' && canManageGroup && (
-            <div className="card">
-              <div className="card-content">
-                <h3 className="text-lg font-semibold mb-4">Group Settings</h3>
-                <p className="text-gray-600">Settings management coming soon...</p>
-              </div>
-            </div>
+            <GroupSettingsForm group={group} onUpdate={loadGroupData} />
           )}
         </div>
       </div>
