@@ -1,0 +1,129 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to get user role
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    // Helper function to check if user is a member of a group
+    function isGroupMember(groupId) {
+      return exists(/databases/$(database)/documents/groupMembers/$(request.auth.uid + '_' + groupId)) ||
+        existsAfter(/databases/$(database)/documents/groupMembers/$(request.auth.uid + '_' + groupId));
+    }
+    
+    // Helper function to check if user is group admin
+    function isGroupAdmin(groupId) {
+      let membership = get(/databases/$(database)/documents/groupMembers/$(request.auth.uid + '_' + groupId));
+      return membership.data.role == 'group_admin';
+    }
+    
+    // Helper function to get group member permissions
+    function hasGroupPermission(groupId, permission) {
+      let memberQuery = /databases/$(database)/documents/groupMembers;
+      return exists(memberQuery) && 
+        get(memberQuery).data.permissions[permission] == true;
+    }
+    
+    // Users can read/write their own user document
+    // Admins can read all users and update any user (for role management and deactivation)
+    match /users/{userId} {
+      allow read: if request.auth != null && 
+        (request.auth.uid == userId || getUserRole() == 'admin');
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && 
+        (request.auth.uid == userId || getUserRole() == 'admin');
+      // Admins can deactivate users (but cannot delete admin accounts - enforced in code)
+      allow delete: if false; // Never allow hard deletes
+    }
+    
+    // Groups: members can read, admins and group creators can manage
+    match /groups/{groupId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || 
+         resource.data.createdBy == request.auth.uid);
+      allow delete: if request.auth != null && 
+        (getUserRole() == 'admin' || 
+         resource.data.createdBy == request.auth.uid);
+    }
+    
+    // Group Members: members can read, group admins and global admins can manage
+    match /groupMembers/{membershipId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null && 
+        (getUserRole() == 'admin' || 
+         resource.data.groupId in get(/databases/$(database)/documents/users/$(request.auth.uid)).data.groups);
+    }
+    
+    // Group Join Requests: users can create their own, group admins can manage
+    match /groupRequests/{requestId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || resource.data.userId == request.auth.uid);
+    }
+    
+    // Artifacts: accessible by authenticated users, group filtering handled in app
+    match /artifacts/{artifactId} {
+      // Read: all authenticated users (group filtering done in application)
+      allow read: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist', 'researcher', 'guest']);
+      
+      // Create: admins and archaeologists
+      allow create: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist']);
+      
+      // Update: global admins or artifact creator
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || 
+         resource.data.createdBy == request.auth.uid);
+      
+      // Delete: global admins or artifact creator
+      allow delete: if request.auth != null && 
+        (getUserRole() == 'admin' || 
+         resource.data.createdBy == request.auth.uid);
+    }
+    
+    // Photos: same rules as artifacts
+    match /photos/{photoId} {
+      allow read: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist', 'researcher', 'guest']);
+      allow create: if request.auth != null && 
+        (getUserRole() in ['admin', 'archaeologist']);
+      allow update: if request.auth != null && 
+        (getUserRole() == 'admin' || resource.data.createdBy == request.auth.uid);
+      allow delete: if request.auth != null && 
+        getUserRole() == 'admin';
+    }
+    
+    // Role Requests: users can create/read their own, admins can read/update all
+    match /roleRequests/{requestId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
+      allow update: if request.auth != null && 
+        getUserRole() == 'admin';
+    }
+    
+    // Artifact Comments: authenticated users can create, author can edit/delete
+    match /artifactComments/{commentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && 
+        request.resource.data.userId == request.auth.uid;
+      allow update: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
+      allow delete: if request.auth != null && 
+        (resource.data.userId == request.auth.uid || getUserRole() == 'admin');
+    }
+    
+    // Sync logs: users can only access their own
+    match /syncLogs/{logId} {
+      allow read, write: if request.auth != null && 
+        resource.data.userId == request.auth.uid;
+    }
+  }
+}
