@@ -116,7 +116,7 @@ const DashboardPage: React.FC = () => {
               {loadingStats ? (
                 <div className="text-3xl font-bold text-archaeological-sage">...</div>
               ) : (
-                <p className="text-3xl font-bold text-blue-600">{stats.totalPhotos}</p>
+                <p className="text-3xl font-bold text-primary-600">{stats.totalPhotos}</p>
               )}
               <p className="text-sm text-archaeological-olive mt-1">
                 Total photos
