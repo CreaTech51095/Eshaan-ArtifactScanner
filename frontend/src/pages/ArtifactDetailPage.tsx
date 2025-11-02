@@ -7,19 +7,34 @@ import ArtifactQRCode from '../components/artifacts/ArtifactQRCode'
 import { getArtifact, deleteArtifact } from '../services/artifactsOffline'
 import { Artifact } from '../types/artifact'
 import { useAuth } from '../hooks/useAuth'
-import { getUserPermissions } from '../types/user'
+import { getUserPermissions, getUserPermissionsInGroup } from '../types/user'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
+import { useGroupPermissions } from '../hooks/useGroupPermissions'
 
 const ArtifactDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { user } = useAuth()
   const isOnline = useOnlineStatus()
-  const permissions = user ? getUserPermissions(user.role) : null
   const [artifact, setArtifact] = useState<Artifact | null>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
   const [showQRCode, setShowQRCode] = useState(false)
+  
+  // Get group permissions if artifact belongs to a group
+  const { membership, loading: groupLoading } = useGroupPermissions(artifact?.groupId || undefined)
+  
+  // Combine global and group permissions
+  const permissions = user
+    ? artifact && artifact.groupId && membership
+      ? getUserPermissionsInGroup(user.role, {
+          canCreateArtifacts: membership.permissions.canCreateArtifacts,
+          canEditArtifacts: membership.permissions.canEditArtifacts,
+          canDeleteArtifacts: membership.permissions.canDeleteArtifacts,
+          canViewArtifacts: membership.permissions.canViewArtifacts
+        })
+      : getUserPermissions(user.role)
+    : null
 
   useEffect(() => {
     const loadArtifact = async () => {
@@ -70,7 +85,7 @@ const ArtifactDetailPage: React.FC = () => {
     }
   }
 
-  if (loading) {
+  if (loading || groupLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <LoadingSpinner text="Loading artifact..." />
@@ -118,8 +133,8 @@ const ArtifactDetailPage: React.FC = () => {
                 >
                   <QrCode className="w-4 h-4" />
                 </button>
-                {/* Only show edit button if user has edit permissions */}
-                {user && permissions?.canEditArtifacts && (user.id === artifact.createdBy || user.role === 'admin') && (
+                {/* Show edit button if user has edit permissions (includes group permissions) */}
+                {user && permissions?.canEditArtifacts && (
                   <>
                     <button
                       onClick={() => navigate(`/artifacts/${id}/edit`)}
@@ -130,8 +145,8 @@ const ArtifactDetailPage: React.FC = () => {
                     </button>
                   </>
                 )}
-                {/* Admins can delete any artifact, archaeologists can delete their own */}
-                {user && permissions?.canDeleteArtifacts && (user.id === artifact.createdBy || user.role === 'admin') && (
+                {/* Show delete button if user has delete permissions (includes group permissions) */}
+                {user && permissions?.canDeleteArtifacts && (
                   <button
                     onClick={handleDelete}
                     disabled={deleting}

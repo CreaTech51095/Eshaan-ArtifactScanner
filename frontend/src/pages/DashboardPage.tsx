@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { getUserPermissions } from '../types/user'
-import { getAllArtifacts } from '../services/artifacts'
+import { getArtifacts } from '../services/artifacts'
 import { Artifact } from '../types/artifact'
 
 interface DashboardStats {
@@ -27,7 +27,7 @@ const DashboardPage: React.FC = () => {
     const fetchStats = async () => {
       try {
         setLoadingStats(true)
-        const artifacts = await getAllArtifacts()
+        const artifacts = await getArtifacts()
         
         // Calculate stats
         const now = new Date()

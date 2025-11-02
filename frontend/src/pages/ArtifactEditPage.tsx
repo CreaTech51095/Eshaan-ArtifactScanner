@@ -5,10 +5,11 @@ import toast from 'react-hot-toast'
 import ArtifactForm from '../components/artifacts/ArtifactForm'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import { getArtifact, updateArtifact } from '../services/artifactsOffline'
-import { CreateArtifactRequest } from '../types/artifact'
+import { CreateArtifactRequest, Artifact } from '../types/artifact'
 import { useAuth } from '../hooks/useAuth'
-import { getUserPermissions } from '../types/user'
+import { getUserPermissions, getUserPermissionsInGroup } from '../types/user'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
+import { getUserGroupMembership } from '../services/groupMembers'
 
 const ArtifactEditPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -19,19 +20,10 @@ const ArtifactEditPage: React.FC = () => {
   const [saving, setSaving] = useState(false)
   const [initialData, setInitialData] = useState<Partial<CreateArtifactRequest>>()
   const [existingPhotos, setExistingPhotos] = useState<any[]>([])
+  const [artifact, setArtifact] = useState<Artifact | null>(null)
 
   useEffect(() => {
     const loadArtifact = async () => {
-      // Check permissions first
-      if (user) {
-        const permissions = getUserPermissions(user.role)
-        if (!permissions.canEditArtifacts) {
-          toast.error('You do not have permission to edit artifacts')
-          navigate('/artifacts')
-          return
-        }
-      }
-
       if (!id) {
         navigate('/artifacts')
         return
@@ -39,31 +31,62 @@ const ArtifactEditPage: React.FC = () => {
 
       try {
         setLoading(true)
-        const artifact = await getArtifact(id)
+        const artifactData = await getArtifact(id)
         
-        if (!artifact) {
+        if (!artifactData) {
           toast.error('Artifact not found')
           navigate('/artifacts')
           return
         }
 
+        setArtifact(artifactData)
+
+        // Check permissions (global or group-specific)
+        if (user) {
+          let hasEditPermission = false
+          
+          if (artifactData.groupId) {
+            // Check group permissions
+            const membership = await getUserGroupMembership(user.id, artifactData.groupId)
+            if (membership) {
+              const permissions = getUserPermissionsInGroup(user.role, {
+                canCreateArtifacts: membership.permissions.canCreateArtifacts,
+                canEditArtifacts: membership.permissions.canEditArtifacts,
+                canDeleteArtifacts: membership.permissions.canDeleteArtifacts,
+                canViewArtifacts: membership.permissions.canViewArtifacts
+              })
+              hasEditPermission = permissions.canEditArtifacts
+            }
+          } else {
+            // Check global permissions
+            const permissions = getUserPermissions(user.role)
+            hasEditPermission = permissions.canEditArtifacts
+          }
+
+          if (!hasEditPermission) {
+            toast.error('You do not have permission to edit this artifact')
+            navigate('/artifacts')
+            return
+          }
+        }
+
         // Prepare initial data for the form
         setInitialData({
-          name: artifact.name,
-          description: artifact.description || '',
-          artifactType: artifact.artifactType,
-          discoveryDate: artifact.discoveryDate,
-          discoverySite: artifact.discoverySite,
-          location: artifact.location,
-          gpsCoordinates: artifact.gpsCoordinates,
-          dimensions: artifact.dimensions,
-          material: artifact.material,
-          condition: artifact.condition,
-          notes: artifact.notes || ''
+          name: artifactData.name,
+          description: artifactData.description || '',
+          artifactType: artifactData.artifactType,
+          discoveryDate: artifactData.discoveryDate,
+          discoverySite: artifactData.discoverySite,
+          location: artifactData.location,
+          gpsCoordinates: artifactData.gpsCoordinates,
+          dimensions: artifactData.dimensions,
+          material: artifactData.material,
+          condition: artifactData.condition,
+          notes: artifactData.notes || ''
         })
         
         // Store existing photos
-        setExistingPhotos(artifact.photos || [])
+        setExistingPhotos(artifactData.photos || [])
       } catch (error) {
         console.error('Error loading artifact:', error)
         toast.error('Failed to load artifact')

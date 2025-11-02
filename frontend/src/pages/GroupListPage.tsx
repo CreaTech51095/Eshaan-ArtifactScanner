@@ -4,6 +4,8 @@ import { Plus, Search, Users } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../hooks/useAuth'
 import { getUserGroups } from '../services/groups'
+import { getGroupMembers } from '../services/groupMembers'
+import { getArtifactsByGroup } from '../services/artifacts'
 import { Group } from '../types/group'
 import GroupCard from '../components/groups/GroupCard'
 import LoadingSpinner from '../components/common/LoadingSpinner'
@@ -25,7 +27,32 @@ const GroupListPage: React.FC = () => {
     try {
       setLoading(true)
       const data = await getUserGroups(user.id)
-      setGroups(data)
+      
+      // Fetch member and artifact counts for each group
+      const groupsWithCounts = await Promise.all(
+        data.map(async (group) => {
+          try {
+            const [members, artifacts] = await Promise.all([
+              getGroupMembers(group.id),
+              getArtifactsByGroup(group.id)
+            ])
+            return {
+              ...group,
+              memberCount: members.length,
+              artifactCount: artifacts.length
+            }
+          } catch (error) {
+            console.error(`Error fetching counts for group ${group.id}:`, error)
+            return {
+              ...group,
+              memberCount: 0,
+              artifactCount: 0
+            }
+          }
+        })
+      )
+      
+      setGroups(groupsWithCounts)
     } catch (error: any) {
       console.error('Error loading groups:', error)
       toast.error('Failed to load groups')

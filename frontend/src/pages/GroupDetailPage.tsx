@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useGroupPermissions } from '../hooks/useGroupPermissions'
 import { getGroup, deleteGroup } from '../services/groups'
 import { getArtifactsByGroup } from '../services/artifacts'
+import { getGroupMembers } from '../services/groupMembers'
 import { Group } from '../types/group'
 import { Artifact } from '../types/artifact'
 import GroupMembersList from '../components/groups/GroupMembersList'
@@ -40,9 +41,10 @@ const GroupDetailPage: React.FC = () => {
 
     try {
       setLoading(true)
-      const [groupData, artifactsData] = await Promise.all([
+      const [groupData, artifactsData, membersData] = await Promise.all([
         getGroup(id),
-        getArtifactsByGroup(id)
+        getArtifactsByGroup(id),
+        getGroupMembers(id)
       ])
       
       if (!groupData) {
@@ -50,6 +52,10 @@ const GroupDetailPage: React.FC = () => {
         navigate('/groups')
         return
       }
+
+      // Add computed fields
+      groupData.memberCount = membersData.length
+      groupData.artifactCount = artifactsData.length
 
       setGroup(groupData)
       setArtifacts(artifactsData)

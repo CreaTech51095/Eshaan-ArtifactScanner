@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { UserPlus, Trash2, Shield, User, Users } from 'lucide-react'
+import { UserPlus, Trash2, Shield, User, Users, Settings } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { GroupMember } from '../../types/group'
 import { User as UserType } from '../../types/user'
@@ -7,6 +7,7 @@ import { getGroupMembers, removeMember } from '../../services/groupMembers'
 import { getDoc, doc } from 'firebase/firestore'
 import { db } from '../../services/firebase'
 import LoadingSpinner from '../common/LoadingSpinner'
+import EditMemberPermissionsDialog from './EditMemberPermissionsDialog'
 
 interface GroupMembersListProps {
   groupId: string
@@ -25,6 +26,7 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
   const [memberDetails, setMemberDetails] = useState<Map<string, UserType>>(new Map())
   const [loading, setLoading] = useState(true)
   const [removingMember, setRemovingMember] = useState<string | null>(null)
+  const [editingMember, setEditingMember] = useState<GroupMember | null>(null)
 
   const loadMembers = async () => {
     try {
@@ -139,25 +141,45 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
                 </div>
 
                 {canManage && !isCurrentUser && (
-                  <button
-                    onClick={() => handleRemoveMember(member.userId)}
-                    disabled={removingMember === member.userId}
-                    className="btn btn-ghost btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
-                  >
-                    {removingMember === member.userId ? (
-                      <LoadingSpinner size="sm" />
-                    ) : (
-                      <>
-                        <Trash2 className="w-4 h-4" />
-                        Remove
-                      </>
-                    )}
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setEditingMember(member)}
+                      className="btn btn-ghost btn-sm text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                    >
+                      <Settings className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleRemoveMember(member.userId)}
+                      disabled={removingMember === member.userId}
+                      className="btn btn-ghost btn-sm text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      {removingMember === member.userId ? (
+                        <LoadingSpinner size="sm" />
+                      ) : (
+                        <>
+                          <Trash2 className="w-4 h-4" />
+                          Remove
+                        </>
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
             )
           })}
         </div>
+      )}
+
+      {/* Edit Member Permissions Dialog */}
+      {editingMember && (
+        <EditMemberPermissionsDialog
+          member={editingMember}
+          memberUser={memberDetails.get(editingMember.userId)}
+          groupId={groupId}
+          onClose={() => setEditingMember(null)}
+          onSuccess={loadMembers}
+        />
       )}
     </div>
   )
