@@ -160,8 +160,17 @@ export const createArtifact = async (
 
     // Prepare artifact data without photos first
     const { photos, ...artifactFields } = data
+    
+    // Filter out undefined values (Firestore doesn't allow undefined)
+    const cleanFields: Record<string, any> = {}
+    for (const [key, value] of Object.entries(artifactFields)) {
+      if (value !== undefined) {
+        cleanFields[key] = value
+      }
+    }
+    
     const artifactData = {
-      ...artifactFields,
+      ...cleanFields,
       createdBy: user.uid,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
