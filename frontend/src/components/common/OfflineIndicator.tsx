@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { WifiOff, Wifi, Cloud, CloudOff, RefreshCw, AlertCircle } from 'lucide-react'
+import { useEffect, useState, useRef } from 'react'
+import { WifiOff, Wifi, Cloud, CloudOff, RefreshCw, AlertCircle, Move } from 'lucide-react'
 import { useOnlineStatus } from '../../hooks/useOnlineStatus'
 import { getPendingChangesCount } from '../../utils/offlineStorage'
 import { useOfflineSyncContext } from '../../contexts/OfflineSyncContext'
@@ -25,6 +25,15 @@ export default function OfflineIndicator({
   const { retryFailedChanges } = useOfflineSyncContext()
   const [pendingChanges, setPendingChanges] = useState(0)
   const [failedChanges, setFailedChanges] = useState(0)
+  
+  // Draggable position state
+  const [position, setPosition] = useState(() => {
+    const saved = localStorage.getItem('offlineIndicatorPosition')
+    return saved ? JSON.parse(saved) : { x: window.innerWidth - 200, y: window.innerHeight - 100 }
+  })
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const indicatorRef = useRef<HTMLDivElement>(null)
 
   // Update pending changes count
   useEffect(() => {
@@ -57,6 +66,71 @@ export default function OfflineIndicator({
     return () => clearInterval(interval)
   }, [])
 
+  // Drag handlers
+  const handleDragStart = (clientX: number, clientY: number) => {
+    setIsDragging(true)
+    setDragStart({
+      x: clientX - position.x,
+      y: clientY - position.y
+    })
+  }
+
+  const handleDragMove = (clientX: number, clientY: number) => {
+    if (!isDragging) return
+    
+    const newX = clientX - dragStart.x
+    const newY = clientY - dragStart.y
+    
+    // Keep within viewport bounds
+    const maxX = window.innerWidth - (indicatorRef.current?.offsetWidth || 200)
+    const maxY = window.innerHeight - (indicatorRef.current?.offsetHeight || 100)
+    
+    const boundedX = Math.max(0, Math.min(newX, maxX))
+    const boundedY = Math.max(0, Math.min(newY, maxY))
+    
+    setPosition({ x: boundedX, y: boundedY })
+  }
+
+  const handleDragEnd = () => {
+    setIsDragging(false)
+    // Save position to localStorage
+    localStorage.setItem('offlineIndicatorPosition', JSON.stringify(position))
+  }
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault()
+    handleDragStart(e.clientX, e.clientY)
+  }
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    handleDragStart(touch.clientX, touch.clientY)
+  }
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => handleDragMove(e.clientX, e.clientY)
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0]
+      handleDragMove(touch.clientX, touch.clientY)
+    }
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleDragEnd)
+      document.addEventListener('touchmove', handleTouchMove)
+      document.addEventListener('touchend', handleDragEnd)
+      
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove)
+        document.removeEventListener('mouseup', handleDragEnd)
+        document.removeEventListener('touchmove', handleTouchMove)
+        document.removeEventListener('touchend', handleDragEnd)
+      }
+    }
+  }, [isDragging, dragStart, position])
+
   const finalPendingChanges = externalPendingChanges ?? pendingChanges
 
   // Don't show anything if online and no pending changes
@@ -82,17 +156,33 @@ export default function OfflineIndicator({
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    <div 
+      ref={indicatorRef}
+      className="fixed z-50"
+      style={{
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        cursor: isDragging ? 'grabbing' : 'grab',
+        touchAction: 'none'
+      }}
+    >
       <div 
         className={`
-          flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg
-          transition-all duration-300 backdrop-blur-sm
+          flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg
+          transition-all duration-300 backdrop-blur-sm select-none
           ${isOnline 
             ? 'bg-white/90 border border-gray-200 text-gray-700' 
             : 'bg-orange-500/90 text-white'
           }
+          ${isDragging ? 'opacity-80' : 'opacity-100'}
         `}
+        onMouseDown={handleMouseDown}
+        onTouchStart={handleTouchStart}
       >
+        {/* Drag handle */}
+        <Move className="w-3 h-3 opacity-50" />
+        <div className="w-px h-4 bg-gray-300"></div>
+        
         {/* Connection status icon */}
         <div className="flex items-center gap-2">
           {isOnline ? (
