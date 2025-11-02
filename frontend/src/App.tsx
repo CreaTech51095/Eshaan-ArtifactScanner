@@ -36,7 +36,7 @@ function App() {
   return (
     <ErrorBoundary>
       <GroupProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen">
           {user && <AppHeader />}
           {user && (
             <OfflineIndicator 

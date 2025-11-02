@@ -47,7 +47,7 @@ const GroupCreatePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/groups')}
@@ -60,7 +60,7 @@ const GroupCreatePage: React.FC = () => {
         <div className="card">
           <div className="card-header">
             <h2 className="text-2xl font-bold">Create New Group</h2>
-            <p className="text-gray-600 mt-1">
+            <p className="text-archaeological-charcoal mt-1">
               Set up a new group to collaborate with your team
             </p>
           </div>
@@ -106,7 +106,7 @@ const GroupCreatePage: React.FC = () => {
                 Privacy
               </label>
               <div className="space-y-2">
-                <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center gap-3 p-3 border border-archaeological-lightBrown rounded-lg cursor-pointer hover:bg-archaeological-warmGray">
                   <input
                     type="radio"
                     name="privacy"
@@ -118,16 +118,16 @@ const GroupCreatePage: React.FC = () => {
                     })}
                     disabled={loading}
                   />
-                  <Lock className="w-5 h-5 text-gray-500" />
+                  <Lock className="w-5 h-5 text-archaeological-olive" />
                   <div>
                     <div className="font-medium">Private</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-archaeological-olive">
                       Only invited members can see this group
                     </div>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                <label className="flex items-center gap-3 p-3 border border-archaeological-lightBrown rounded-lg cursor-pointer hover:bg-archaeological-warmGray">
                   <input
                     type="radio"
                     name="privacy"
@@ -139,10 +139,10 @@ const GroupCreatePage: React.FC = () => {
                     })}
                     disabled={loading}
                   />
-                  <Globe className="w-5 h-5 text-gray-500" />
+                  <Globe className="w-5 h-5 text-archaeological-olive" />
                   <div>
                     <div className="font-medium">Public</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-archaeological-olive">
                       Anyone can see this group
                     </div>
                   </div>
@@ -155,7 +155,7 @@ const GroupCreatePage: React.FC = () => {
               <label className="label">
                 Default Member Permissions
               </label>
-              <p className="text-sm text-gray-500 mb-3">
+              <p className="text-sm text-archaeological-olive mb-3">
                 These permissions will be applied to new members by default
               </p>
               <div className="space-y-2">

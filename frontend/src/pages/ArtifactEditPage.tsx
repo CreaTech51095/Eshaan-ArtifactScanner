@@ -116,7 +116,7 @@ const ArtifactEditPage: React.FC = () => {
       })
       
       // Navigate back to the artifact detail page
-      navigate(`/artifacts/${id}`)
+      navigate('/artifacts/' + id)
     } catch (error: any) {
       console.error('Error updating artifact:', error)
       
@@ -132,7 +132,7 @@ const ArtifactEditPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner text="Loading artifact..." />
       </div>
     )
@@ -140,19 +140,19 @@ const ArtifactEditPage: React.FC = () => {
 
   if (!initialData) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <p className="text-gray-600">Artifact not found</p>
+          <p className="text-archaeological-charcoal">Artifact not found</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
-          onClick={() => navigate(`/artifacts/${id}`)}
+          onClick={() => navigate('/artifacts/' + id)}
           className="btn btn-ghost mb-6 flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -160,8 +160,8 @@ const ArtifactEditPage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Artifact</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">Edit Artifact</h1>
+          <p className="mt-2 text-archaeological-charcoal">
             Update the details of your archaeological artifact
           </p>
         </div>
@@ -183,4 +183,3 @@ const ArtifactEditPage: React.FC = () => {
 }
 
 export default ArtifactEditPage
-

@@ -6,29 +6,38 @@
 
 @layer base {
   * {
-    @apply border-secondary-200;
+    @apply border-archaeological-lightBrown;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900 font-sans;
+    @apply text-archaeological-charcoal font-sans;
+    background: linear-gradient(135deg, #F8F4F0 0%, #F5F1ED 100%);
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-archaeological-cream transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800;
+    @apply bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 shadow-archaeological-sm;
   }
   
   .btn-secondary {
-    @apply bg-secondary-200 text-secondary-900 hover:bg-secondary-300 active:bg-secondary-400;
+    @apply bg-archaeological-warmGray text-archaeological-charcoal hover:bg-archaeological-lightBrown active:bg-archaeological-accentBrown;
   }
   
   .btn-outline {
-    @apply border border-primary-600 text-primary-600 hover:bg-primary-50 active:bg-primary-100;
+    @apply border border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white active:bg-primary-600;
+  }
+  
+  .btn-danger {
+    @apply bg-archaeological-terracotta text-white hover:opacity-90 active:opacity-80 shadow-archaeological-sm;
+  }
+  
+  .btn-ghost {
+    @apply text-archaeological-charcoal hover:bg-archaeological-warmGray active:bg-archaeological-lightBrown;
   }
   
   .btn-sm {
@@ -44,11 +53,12 @@
   }
   
   .input {
-    @apply flex h-10 w-full rounded-md border border-secondary-300 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-secondary-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply flex h-10 w-full rounded-md border border-archaeological-lightBrown bg-white px-3 py-2 text-sm ring-offset-archaeological-cream file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-archaeological-olive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
   
   .card {
-    @apply rounded-lg border border-secondary-200 bg-white shadow-sm;
+    @apply rounded-lg border border-archaeological-lightBrown shadow-archaeological;
+    background: linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,244,240,0.9) 100%);
   }
   
   .card-header {
@@ -61,5 +71,13 @@
   
   .card-footer {
     @apply flex items-center p-6 pt-0;
+  }
+  
+  .checkbox {
+    @apply h-4 w-4 rounded border-archaeological-lightBrown text-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+  
+  .select {
+    @apply flex h-10 w-full rounded-md border border-archaeological-lightBrown bg-white px-3 py-2 text-sm ring-offset-archaeological-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

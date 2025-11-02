@@ -44,10 +44,10 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-main-gradient flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100">
+          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-archaeological-lightBrown">
             <svg
               className="h-8 w-8 text-primary-600"
               fill="none"
@@ -62,10 +62,10 @@ const LoginPage: React.FC = () => {
               />
             </svg>
           </div>
-          <h1 className="mt-6 text-3xl font-extrabold text-secondary-900">
+          <h1 className="mt-6 text-3xl font-extrabold text-archaeological-charcoal">
             Archaeological Artifacts Scanner
           </h1>
-          <p className="mt-2 text-sm text-secondary-600">
+          <p className="mt-2 text-sm text-archaeological-charcoal">
             Manage and scan archaeological artifacts with QR codes
           </p>
         </div>
@@ -80,10 +80,10 @@ const LoginPage: React.FC = () => {
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-archaeological-lightBrown" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gradient-to-br from-primary-50 to-secondary-100 text-gray-500">
+              <span className="px-2 bg-main-gradient text-archaeological-olive">
                 Or
               </span>
             </div>
@@ -92,18 +92,18 @@ const LoginPage: React.FC = () => {
           <button
             onClick={handleGuestLogin}
             disabled={guestLoading}
-            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 border border-archaeological-lightBrown rounded-lg shadow-archaeological-sm text-sm font-medium text-archaeological-charcoal bg-white hover:bg-archaeological-warmGray focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <UserRound className="w-5 h-5" />
             {guestLoading ? 'Signing in as Guest...' : 'Continue as Guest'}
           </button>
-          <p className="mt-2 text-xs text-center text-gray-500">
+          <p className="mt-2 text-xs text-center text-archaeological-olive">
             Browse artifacts without creating an account (read-only access)
           </p>
         </div>
 
         <div className="mt-8 text-center">
-          <div className="text-xs text-secondary-500">
+          <div className="text-xs text-archaeological-olive">
             <p>Demo Credentials:</p>
             <p className="mt-1">
               <strong>Admin:</strong> admin@university.edu / admin123

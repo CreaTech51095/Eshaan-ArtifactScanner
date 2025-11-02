@@ -68,19 +68,19 @@ const GroupListPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen  flex items-center justify-center">
         <LoadingSpinner text="Loading groups..." />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8 flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Groups</h1>
-            <p className="mt-2 text-gray-600">
+            <h1 className="text-3xl font-bold text-archaeological-charcoal">Groups</h1>
+            <p className="mt-2 text-archaeological-charcoal">
               Collaborate with your team on artifacts
             </p>
           </div>
@@ -105,7 +105,7 @@ const GroupListPage: React.FC = () => {
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-archaeological-sage w-5 h-5" />
             <input
               type="text"
               placeholder="Search groups..."
@@ -121,10 +121,10 @@ const GroupListPage: React.FC = () => {
           <div className="card">
             <div className="card-content text-center py-12">
               <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <h3 className="text-lg font-semibold text-archaeological-charcoal mb-2">
                 {searchTerm ? 'No groups found' : 'No groups yet'}
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-archaeological-charcoal mb-6">
                 {searchTerm
                   ? 'Try adjusting your search criteria'
                   : 'Create your first group to start collaborating with your team'}
@@ -150,7 +150,7 @@ const GroupListPage: React.FC = () => {
 
         {/* Results count */}
         {filteredGroups.length > 0 && (
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div className="mt-6 text-center text-sm text-archaeological-olive">
             Showing {filteredGroups.length} of {groups.length} group{groups.length !== 1 ? 's' : ''}
           </div>
         )}

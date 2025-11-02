@@ -70,32 +70,32 @@ const UserProfileMenu: React.FC = () => {
       {/* Profile Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-archaeological-warmGray transition-colors"
         aria-label="User menu"
       >
         <div className="w-8 h-8 rounded-full bg-primary-600 text-white flex items-center justify-center font-semibold text-sm">
           {getInitials()}
         </div>
         <div className="hidden md:block text-left">
-          <p className="text-sm font-medium text-gray-900">
+          <p className="text-sm font-medium text-archaeological-charcoal">
             {user.displayName || user.username || 'User'}
           </p>
-          <p className="text-xs text-gray-500">{user.email}</p>
+          <p className="text-xs text-archaeological-olive">{user.email}</p>
         </div>
-        <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-4 h-4 text-archaeological-olive transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+        <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-archaeological border border-archaeological-lightBrown py-2 z-50">
           {/* User Info */}
-          <div className="px-4 py-3 border-b border-gray-200">
-            <p className="text-sm font-semibold text-gray-900">
+          <div className="px-4 py-3 border-b border-archaeological-lightBrown">
+            <p className="text-sm font-semibold text-archaeological-charcoal">
               {user.displayName || user.username || 'User'}
             </p>
-            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            <p className="text-xs text-archaeological-olive truncate">{user.email}</p>
             {user.role && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary-100 text-primary-800 mt-1">
+              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-archaeological-lightBrown text-primary-800 mt-1">
                 {user.role}
               </span>
             )}
@@ -106,7 +106,7 @@ const UserProfileMenu: React.FC = () => {
             <div className="py-1">
               <button
                 onClick={handleViewProfile}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-archaeological-charcoal hover:bg-archaeological-warmGray transition-colors"
               >
                 <User className="w-4 h-4" />
                 <span>View Profile</span>
@@ -114,7 +114,7 @@ const UserProfileMenu: React.FC = () => {
 
               <button
                 onClick={handleViewProfile}
-                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-archaeological-charcoal hover:bg-archaeological-warmGray transition-colors"
               >
                 <Settings className="w-4 h-4" />
                 <span>Account Settings</span>
@@ -123,13 +123,13 @@ const UserProfileMenu: React.FC = () => {
           )}
 
           {user.role === 'guest' && (
-            <div className="py-1 px-4 text-xs text-gray-500">
+            <div className="py-1 px-4 text-xs text-archaeological-olive">
               <p className="italic">You're browsing as a guest.</p>
               <p className="mt-1">Create an account to save data and access more features.</p>
             </div>
           )}
 
-          <div className="border-t border-gray-200 py-1">
+          <div className="border-t border-archaeological-lightBrown py-1">
             {user.role !== 'guest' && (
               <button
                 onClick={handleDeleteAccount}
@@ -142,7 +142,7 @@ const UserProfileMenu: React.FC = () => {
 
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-archaeological-charcoal hover:bg-archaeological-warmGray transition-colors"
             >
               <LogOut className="w-4 h-4" />
               <span>{user.role === 'guest' ? 'Exit Guest Mode' : 'Log Out'}</span>

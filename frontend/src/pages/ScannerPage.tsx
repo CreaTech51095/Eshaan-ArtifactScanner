@@ -152,11 +152,11 @@ const ScannerPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">QR Code Scanner</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">QR Code Scanner</h1>
+          <p className="mt-2 text-archaeological-charcoal">
             Scan QR codes to quickly access artifact information
           </p>
         </div>
@@ -180,11 +180,11 @@ const ScannerPage: React.FC = () => {
             {/* Scanner Container */}
             {!isScanning && (
               <div className="text-center py-12">
-                <Camera className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <Camera className="w-16 h-16 text-archaeological-sage mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-archaeological-charcoal mb-2">
                   Ready to Scan
                 </h3>
-                <p className="text-gray-600 mb-6">
+                <p className="text-archaeological-charcoal mb-6">
                   Click the button below to activate your camera
                 </p>
                 <button
@@ -216,7 +216,7 @@ const ScannerPage: React.FC = () => {
                   <X className="w-4 h-4" />
                   Stop Scanner
                 </button>
-                <p className="text-sm text-gray-500 mt-2">
+                <p className="text-sm text-archaeological-olive mt-2">
                   Point your camera at a QR code
                 </p>
               </div>
@@ -238,17 +238,17 @@ const ScannerPage: React.FC = () => {
         {/* Manual Entry Card */}
         <div className="card">
           <div className="card-content">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-archaeological-charcoal mb-4 flex items-center gap-2">
               <Search className="w-5 h-5" />
               Manual Entry
             </h3>
-            <p className="text-gray-600 text-sm mb-4">
+            <p className="text-archaeological-charcoal text-sm mb-4">
               Already know the artifact ID? Enter it directly below.
             </p>
             
             <form onSubmit={handleManualSubmit} className="space-y-4">
               <div>
-                <label htmlFor="artifactId" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="artifactId" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                   Artifact ID
                 </label>
                 <input

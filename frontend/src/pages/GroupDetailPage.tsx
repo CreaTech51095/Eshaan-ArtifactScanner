@@ -91,7 +91,7 @@ const GroupDetailPage: React.FC = () => {
 
   if (loading || permissionsLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner text="Loading group..." />
       </div>
     )
@@ -99,9 +99,9 @@ const GroupDetailPage: React.FC = () => {
 
   if (!group) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Group Not Found</h2>
+          <h2 className="text-2xl font-bold text-archaeological-charcoal mb-2">Group Not Found</h2>
           <button onClick={() => navigate('/groups')} className="btn btn-primary mt-4">
             Back to Groups
           </button>
@@ -111,7 +111,7 @@ const GroupDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <button
@@ -126,11 +126,11 @@ const GroupDetailPage: React.FC = () => {
           <div className="card-content">
             <div className="flex justify-between items-start">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{group.name}</h1>
+                <h1 className="text-3xl font-bold text-archaeological-charcoal mb-2">{group.name}</h1>
                 {group.description && (
-                  <p className="text-gray-600 mb-4">{group.description}</p>
+                  <p className="text-archaeological-charcoal mb-4">{group.description}</p>
                 )}
-                <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-4 text-sm text-archaeological-olive">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
                     <span>{group.memberCount || 0} members</span>
@@ -162,14 +162,14 @@ const GroupDetailPage: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 mb-6">
+        <div className="border-b border-archaeological-lightBrown mb-6">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('overview')}
               className={`py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'overview'
                   ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-archaeological-olive hover:text-archaeological-charcoal hover:border-archaeological-lightBrown'
               }`}
             >
               Overview
@@ -179,7 +179,7 @@ const GroupDetailPage: React.FC = () => {
               className={`py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'artifacts'
                   ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-archaeological-olive hover:text-archaeological-charcoal hover:border-archaeological-lightBrown'
               }`}
             >
               <Package className="w-4 h-4 inline mr-1" />
@@ -190,7 +190,7 @@ const GroupDetailPage: React.FC = () => {
               className={`py-4 px-1 border-b-2 font-medium text-sm ${
                 activeTab === 'members'
                   ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-archaeological-olive hover:text-archaeological-charcoal hover:border-archaeological-lightBrown'
               }`}
             >
               <Users className="w-4 h-4 inline mr-1" />
@@ -202,7 +202,7 @@ const GroupDetailPage: React.FC = () => {
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'requests'
                     ? 'border-primary-500 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-archaeological-olive hover:text-archaeological-charcoal hover:border-archaeological-lightBrown'
                 }`}
               >
                 Join Requests
@@ -214,7 +214,7 @@ const GroupDetailPage: React.FC = () => {
                 className={`py-4 px-1 border-b-2 font-medium text-sm ${
                   activeTab === 'settings'
                     ? 'border-primary-500 text-primary-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    : 'border-transparent text-archaeological-olive hover:text-archaeological-charcoal hover:border-archaeological-lightBrown'
                 }`}
               >
                 <Settings className="w-4 h-4 inline mr-1" />
@@ -233,12 +233,12 @@ const GroupDetailPage: React.FC = () => {
                   <h3 className="text-lg font-semibold mb-4">Group Information</h3>
                   <dl className="space-y-2">
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Privacy</dt>
-                      <dd className="text-sm text-gray-900 capitalize">{group.settings.privacy}</dd>
+                      <dt className="text-sm font-medium text-archaeological-olive">Privacy</dt>
+                      <dd className="text-sm text-archaeological-charcoal capitalize">{group.settings.privacy}</dd>
                     </div>
                     <div>
-                      <dt className="text-sm font-medium text-gray-500">Created</dt>
-                      <dd className="text-sm text-gray-900">
+                      <dt className="text-sm font-medium text-archaeological-olive">Created</dt>
+                      <dd className="text-sm text-archaeological-charcoal">
                         {new Date(group.createdAt).toLocaleDateString()}
                       </dd>
                     </div>
@@ -251,11 +251,11 @@ const GroupDetailPage: React.FC = () => {
                   <h3 className="text-lg font-semibold mb-4">Quick Stats</h3>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Total Artifacts</span>
+                      <span className="text-sm text-archaeological-charcoal">Total Artifacts</span>
                       <span className="text-2xl font-bold text-primary-600">{artifacts.length}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Total Members</span>
+                      <span className="text-sm text-archaeological-charcoal">Total Members</span>
                       <span className="text-2xl font-bold text-primary-600">{group.memberCount || 0}</span>
                     </div>
                   </div>
@@ -269,8 +269,8 @@ const GroupDetailPage: React.FC = () => {
               <div className="card-content">
                 {artifacts.length === 0 ? (
                   <div className="text-center py-12">
-                    <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-600">No artifacts in this group yet</p>
+                    <Package className="w-12 h-12 text-archaeological-sage mx-auto mb-4" />
+                    <p className="text-archaeological-charcoal">No artifacts in this group yet</p>
                     <button
                       onClick={() => navigate('/artifacts/new')}
                       className="btn btn-primary mt-4"
@@ -284,7 +284,7 @@ const GroupDetailPage: React.FC = () => {
                       <div
                         key={artifact.id}
                         onClick={() => navigate(`/artifacts/${artifact.id}`)}
-                        className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-4 p-4 bg-archaeological-warmGray rounded-lg hover:bg-archaeological-lightBrown cursor-pointer"
                       >
                         {artifact.photos && artifact.photos.length > 0 ? (
                           <img
@@ -293,13 +293,13 @@ const GroupDetailPage: React.FC = () => {
                             className="w-16 h-16 object-cover rounded"
                           />
                         ) : (
-                          <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center">
-                            <Package className="w-6 h-6 text-gray-400" />
+                          <div className="w-16 h-16 bg-archaeological-lightBrown rounded flex items-center justify-center">
+                            <Package className="w-6 h-6 text-archaeological-sage" />
                           </div>
                         )}
                         <div className="flex-1">
-                          <h4 className="font-medium text-gray-900">{artifact.name}</h4>
-                          <p className="text-sm text-gray-500">{artifact.artifactType}</p>
+                          <h4 className="font-medium text-archaeological-charcoal">{artifact.name}</h4>
+                          <p className="text-sm text-archaeological-olive">{artifact.artifactType}</p>
                         </div>
                       </div>
                     ))}
