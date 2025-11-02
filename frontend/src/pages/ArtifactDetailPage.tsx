@@ -121,9 +121,27 @@ const ArtifactDetailPage: React.FC = () => {
                 <h1 className="text-3xl font-bold text-archaeological-charcoal mb-2">
                   {artifact.name}
                 </h1>
-                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-archaeological-lightBrown text-primary-800">
-                  {artifact.artifactType}
-                </span>
+                <div className="flex flex-wrap gap-2">
+                  {/* Material Badge */}
+                  {artifact.material && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                      Material: {artifact.material}
+                      {artifact.materialSubtype && ` (${artifact.materialSubtype})`}
+                    </span>
+                  )}
+                  {/* Object Classification Badge */}
+                  {artifact.objectClassification && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                      Type: {artifact.objectClassification}
+                    </span>
+                  )}
+                  {/* Legacy Artifact Type (for backward compatibility) */}
+                  {!artifact.material && !artifact.objectClassification && artifact.artifactType && (
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-archaeological-lightBrown text-primary-800">
+                      {artifact.artifactType}
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex gap-2">
                 <button

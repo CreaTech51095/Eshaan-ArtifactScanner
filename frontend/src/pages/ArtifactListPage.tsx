@@ -43,7 +43,10 @@ const ArtifactListPage: React.FC = () => {
   const filteredArtifacts = artifacts.filter(artifact =>
     artifact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     artifact.artifactType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    artifact.discoverySite.toLowerCase().includes(searchTerm.toLowerCase())
+    artifact.discoverySite.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    artifact.material?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    artifact.materialSubtype?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    artifact.objectClassification?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   if (loading) {
@@ -156,9 +159,27 @@ const ArtifactListPage: React.FC = () => {
                     </h3>
                   </div>
                   
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-archaeological-lightBrown text-primary-800 mb-3">
-                    {artifact.artifactType}
-                  </span>
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    {/* Material Badge */}
+                    {artifact.material && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        {artifact.material}
+                        {artifact.materialSubtype && ` (${artifact.materialSubtype})`}
+                      </span>
+                    )}
+                    {/* Object Classification Badge */}
+                    {artifact.objectClassification && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {artifact.objectClassification}
+                      </span>
+                    )}
+                    {/* Legacy Type (for backward compatibility) */}
+                    {!artifact.material && !artifact.objectClassification && artifact.artifactType && (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-archaeological-lightBrown text-primary-800">
+                        {artifact.artifactType}
+                      </span>
+                    )}
+                  </div>
 
                   {artifact.description && (
                     <p className="text-sm text-archaeological-charcoal mb-3 line-clamp-2">

@@ -46,8 +46,8 @@ class ArtifactDatabase extends Dexie {
     super('ArtifactScannerDB')
     
     // Database schema - increment version if schema changes
-    this.version(2).stores({
-      artifacts: 'id, name, artifactType, discoverySite, createdBy, createdAt, _synced',
+    this.version(3).stores({
+      artifacts: 'id, name, artifactType, material, materialSubtype, objectClassification, discoverySite, createdBy, createdAt, _synced',
       photos: 'id, artifactId, _synced',
       pendingChanges: '++id, entityType, entityId, action, timestamp',
       syncLogs: 'id, entityType, entityId, action, localTimestamp',

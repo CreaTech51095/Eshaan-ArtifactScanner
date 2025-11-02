@@ -10,7 +10,8 @@ import {
   where, 
   orderBy,
   Timestamp,
-  serverTimestamp 
+  serverTimestamp,
+  deleteField
 } from 'firebase/firestore'
 import { 
   ref, 
@@ -28,6 +29,40 @@ import {
 } from '../types/artifact'
 
 const ARTIFACTS_COLLECTION = 'artifacts'
+
+/**
+ * Migrate legacy artifact data to new material-based structure
+ * Maps old artifactType to material and objectClassification
+ */
+const migrateArtifactData = (artifact: any): any => {
+  // If new fields already exist, no migration needed
+  if (artifact.material || artifact.objectClassification) {
+    return artifact
+  }
+
+  // Map legacy artifactType to new structure
+  const typeMapping: Record<string, { material?: string; objectClassification?: string }> = {
+    'pottery': { material: 'ceramic', objectClassification: 'pottery' },
+    'tool': { objectClassification: 'tool' },
+    'jewelry': { objectClassification: 'jewelry' },
+    'weapon': { objectClassification: 'weapon' },
+    'coin': { material: 'metal', objectClassification: 'coin' },
+    'sculpture': { objectClassification: 'sculpture' },
+    'textile': { material: 'textile', objectClassification: 'textile-item' },
+  }
+
+  const mapping = typeMapping[artifact.artifactType?.toLowerCase()]
+  if (mapping) {
+    return {
+      ...artifact,
+      material: mapping.material,
+      objectClassification: mapping.objectClassification,
+    }
+  }
+
+  // If no mapping found, leave as is
+  return artifact
+}
 
 /**
  * Generate QR code data URL for an artifact
@@ -206,12 +241,15 @@ export const getArtifact = async (id: string): Promise<Artifact | null> => {
     }
 
     const data = docSnap.data()
-    return {
+    const artifact = {
       id: docSnap.id,
       ...data,
       createdAt: data.createdAt?.toDate?.() || new Date(),
       updatedAt: data.updatedAt?.toDate?.() || new Date(),
     } as Artifact
+
+    // Apply migration for backward compatibility
+    return migrateArtifactData(artifact) as Artifact
   } catch (error) {
     console.error('❌ Error getting artifact:', error)
     throw error
@@ -234,12 +272,15 @@ export const getArtifacts = async (): Promise<Artifact[]> => {
 
     querySnapshot.forEach((doc) => {
       const data = doc.data()
-      artifacts.push({
+      const artifact = {
         id: doc.id,
         ...data,
         createdAt: data.createdAt?.toDate?.() || new Date(),
         updatedAt: data.updatedAt?.toDate?.() || new Date(),
-      } as Artifact)
+      } as Artifact
+
+      // Apply migration for backward compatibility
+      artifacts.push(migrateArtifactData(artifact) as Artifact)
     })
 
     // Sort client-side by createdAt descending
@@ -306,10 +347,20 @@ export const updateArtifact = async (
       console.log(`✅ ${newUploadedPhotos.length} new photo(s) uploaded successfully`)
     }
 
-    // Filter out undefined values (Firestore doesn't allow undefined)
-    const cleanData = Object.fromEntries(
-      Object.entries(otherData).filter(([_, value]) => value !== undefined)
-    )
+    // Process data: filter out undefined and convert explicit undefined to deleteField()
+    // This ensures fields that should be cleared are actually removed from Firestore
+    const cleanData: Record<string, any> = {}
+    for (const [key, value] of Object.entries(otherData)) {
+      if (value === undefined) {
+        // If materialSubtype is explicitly set to undefined, we want to delete it from Firestore
+        if (key === 'materialSubtype') {
+          cleanData[key] = deleteField()
+        }
+        // For other fields, just skip (don't include in update)
+      } else {
+        cleanData[key] = value
+      }
+    }
 
     // Update with new data and increment version
     await updateDoc(docRef, {

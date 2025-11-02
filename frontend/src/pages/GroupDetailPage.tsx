@@ -299,7 +299,24 @@ const GroupDetailPage: React.FC = () => {
                         )}
                         <div className="flex-1">
                           <h4 className="font-medium text-archaeological-charcoal">{artifact.name}</h4>
-                          <p className="text-sm text-archaeological-olive">{artifact.artifactType}</p>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {artifact.material && (
+                              <span className="text-xs text-archaeological-olive">
+                                {artifact.material}{artifact.materialSubtype && ` (${artifact.materialSubtype})`}
+                              </span>
+                            )}
+                            {artifact.material && artifact.objectClassification && (
+                              <span className="text-xs text-archaeological-olive">•</span>
+                            )}
+                            {artifact.objectClassification && (
+                              <span className="text-xs text-archaeological-olive">
+                                {artifact.objectClassification}
+                              </span>
+                            )}
+                            {!artifact.material && !artifact.objectClassification && artifact.artifactType && (
+                              <span className="text-xs text-archaeological-olive">{artifact.artifactType}</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}

@@ -75,14 +75,17 @@ const ArtifactEditPage: React.FC = () => {
           name: artifactData.name,
           description: artifactData.description || '',
           artifactType: artifactData.artifactType,
+          material: artifactData.material,
+          materialSubtype: artifactData.materialSubtype,
+          objectClassification: artifactData.objectClassification,
           discoveryDate: artifactData.discoveryDate,
           discoverySite: artifactData.discoverySite,
           location: artifactData.location,
           gpsCoordinates: artifactData.gpsCoordinates,
           dimensions: artifactData.dimensions,
-          material: artifactData.material,
           condition: artifactData.condition,
-          notes: artifactData.notes || ''
+          notes: artifactData.notes || '',
+          groupId: artifactData.groupId
         })
         
         // Store existing photos

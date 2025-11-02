@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { CreateArtifactRequest } from '../../types/artifact'
-import { ARTIFACT_TYPES } from '../../types/artifact'
+import { ARTIFACT_TYPES, ARTIFACT_MATERIALS, METAL_SUBTYPES, OBJECT_CLASSIFICATIONS } from '../../types/artifact'
 import { Camera, X, Upload } from 'lucide-react'
 import { SUPPORTED_IMAGE_TYPES, MAX_FILE_SIZE } from '../../types/photo'
 import CameraCapture from './CameraCapture'
@@ -42,8 +42,19 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [keptPhotoIds, setKeptPhotoIds] = useState<string[]>(existingPhotos.map(p => p.id))
   const [userGroups, setUserGroups] = useState<Group[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>(initialData?.groupId)
+  
+  // New material-based categorization
+  const [materialSelection, setMaterialSelection] = useState<string>(initialData?.material || '')
+  const [customMaterial, setCustomMaterial] = useState<string>('')
+  const [metalSubtypeSelection, setMetalSubtypeSelection] = useState<string>(initialData?.materialSubtype || '')
+  const [customMetalSubtype, setCustomMetalSubtype] = useState<string>('')
+  const [objectClassificationSelection, setObjectClassificationSelection] = useState<string>(initialData?.objectClassification || '')
+  const [customObjectClassification, setCustomObjectClassification] = useState<string>('')
+  
+  // Legacy artifact type (for backward compatibility)
   const [artifactTypeSelection, setArtifactTypeSelection] = useState<string>(initialData?.artifactType || '')
   const [customArtifactType, setCustomArtifactType] = useState<string>('')
+  
   const cameraInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -133,19 +144,49 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   }
 
   const handleFormSubmit = (data: CreateArtifactRequest) => {
-    // Use custom artifact type if "custom" was selected
-    const finalArtifactType = artifactTypeSelection === 'custom' 
-      ? customArtifactType.trim() 
-      : artifactTypeSelection
+    // Handle new material-based categorization
+    const finalMaterial = materialSelection === 'custom' 
+      ? customMaterial.trim() 
+      : materialSelection
 
-    if (artifactTypeSelection === 'custom' && !customArtifactType.trim()) {
-      setPhotoError('Please specify a custom artifact type')
+    const finalMetalSubtype = metalSubtypeSelection === 'custom'
+      ? customMetalSubtype.trim()
+      : metalSubtypeSelection
+
+    const finalObjectClassification = objectClassificationSelection === 'custom'
+      ? customObjectClassification.trim()
+      : objectClassificationSelection
+
+    // Validation for custom fields
+    if (materialSelection === 'custom' && !customMaterial.trim()) {
+      setPhotoError('Please specify a custom material type')
       return
+    }
+
+    if (materialSelection === 'metal' && metalSubtypeSelection === 'custom' && !customMetalSubtype.trim()) {
+      setPhotoError('Please specify a custom metal subtype')
+      return
+    }
+
+    if (objectClassificationSelection === 'custom' && !customObjectClassification.trim()) {
+      setPhotoError('Please specify a custom object classification')
+      return
+    }
+
+    // For backward compatibility, set artifactType based on new fields or use legacy if provided
+    let finalArtifactType = artifactTypeSelection
+    if (!finalArtifactType && finalObjectClassification) {
+      finalArtifactType = finalObjectClassification
+    } else if (!finalArtifactType && finalMaterial) {
+      finalArtifactType = finalMaterial
     }
 
     onSubmit({ 
       ...data,
-      artifactType: finalArtifactType,
+      artifactType: finalArtifactType || 'unclassified',
+      material: finalMaterial || undefined,
+      materialSubtype: (materialSelection === 'metal' && finalMetalSubtype) ? finalMetalSubtype : undefined,
+      objectClassification: finalObjectClassification || undefined,
       photos: selectedPhotos,
       groupId: selectedGroupId === 'uncategorized' ? undefined : selectedGroupId,
       ...(isEditMode && { photosToKeep: keptPhotoIds })
@@ -204,48 +245,142 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
         )}
       </div>
 
+      {/* Material Selection */}
       <div>
-        <label htmlFor="artifactType" className="block text-sm font-medium text-gray-700 mb-1">
-          Artifact Type
+        <label htmlFor="material" className="block text-sm font-medium text-gray-700 mb-1">
+          Material <span className="text-gray-500 font-normal">(Optional)</span>
         </label>
         <select
-          value={artifactTypeSelection}
+          value={materialSelection}
           onChange={(e) => {
-            setArtifactTypeSelection(e.target.value)
-            setValue('artifactType', e.target.value)
+            setMaterialSelection(e.target.value)
+            setValue('material', e.target.value)
+            // Reset metal subtype if changing away from metal
+            if (e.target.value !== 'metal') {
+              setMetalSubtypeSelection('')
+              setCustomMetalSubtype('')
+              setValue('materialSubtype', '')
+            }
           }}
-          id="artifactType"
+          id="material"
           className="input"
         >
-          <option value="">Select artifact type</option>
-          {ARTIFACT_TYPES.map((type) => (
-            <option key={type.id} value={type.id}>
-              {type.icon} {type.name}
+          <option value="">Select material</option>
+          {ARTIFACT_MATERIALS.map((material) => (
+            <option key={material.id} value={material.id}>
+              {material.icon} {material.name}
             </option>
           ))}
         </select>
-        {errors.artifactType && (
-          <p className="text-red-600 text-sm mt-1">{errors.artifactType.message}</p>
-        )}
+        <p className="text-xs text-gray-500 mt-1">
+          Primary archaeological categorization by material composition
+        </p>
         
-        {/* Custom Type Input */}
-        {artifactTypeSelection === 'custom' && (
+        {/* Custom Material Input */}
+        {materialSelection === 'custom' && (
           <div className="mt-3">
-            <label htmlFor="customType" className="block text-sm font-medium text-gray-700 mb-1">
-              Specify Artifact Type *
+            <label htmlFor="customMaterial" className="block text-sm font-medium text-gray-700 mb-1">
+              Specify Material *
             </label>
             <input
               type="text"
-              id="customType"
-              value={customArtifactType}
-              onChange={(e) => setCustomArtifactType(e.target.value)}
-              placeholder="e.g., Manuscript, Bone Fragment, Papyrus..."
+              id="customMaterial"
+              value={customMaterial}
+              onChange={(e) => setCustomMaterial(e.target.value)}
+              placeholder="e.g., Papyrus, Obsidian, Amber..."
               className="input"
               maxLength={50}
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Enter the specific type of artifact (max 50 characters)
-            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Metal Subtype Selection (Conditional) */}
+      {materialSelection === 'metal' && (
+        <div>
+          <label htmlFor="metalSubtype" className="block text-sm font-medium text-gray-700 mb-1">
+            Metal Subtype <span className="text-gray-500 font-normal">(Optional)</span>
+          </label>
+          <select
+            value={metalSubtypeSelection}
+            onChange={(e) => {
+              setMetalSubtypeSelection(e.target.value)
+              setValue('materialSubtype', e.target.value)
+            }}
+            id="metalSubtype"
+            className="input"
+          >
+            <option value="">Select metal subtype</option>
+            {METAL_SUBTYPES.map((subtype) => (
+              <option key={subtype.id} value={subtype.id}>
+                {subtype.name}
+              </option>
+            ))}
+          </select>
+          <p className="text-xs text-gray-500 mt-1">
+            Specify the specific metal type
+          </p>
+          
+          {/* Custom Metal Subtype Input */}
+          {metalSubtypeSelection === 'custom' && (
+            <div className="mt-3">
+              <label htmlFor="customMetalSubtype" className="block text-sm font-medium text-gray-700 mb-1">
+                Specify Metal Type *
+              </label>
+              <input
+                type="text"
+                id="customMetalSubtype"
+                value={customMetalSubtype}
+                onChange={(e) => setCustomMetalSubtype(e.target.value)}
+                placeholder="e.g., Tin, Aluminum, Zinc..."
+                className="input"
+                maxLength={50}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Object Classification */}
+      <div>
+        <label htmlFor="objectClassification" className="block text-sm font-medium text-gray-700 mb-1">
+          Object Classification <span className="text-gray-500 font-normal">(Optional)</span>
+        </label>
+        <select
+          value={objectClassificationSelection}
+          onChange={(e) => {
+            setObjectClassificationSelection(e.target.value)
+            setValue('objectClassification', e.target.value)
+          }}
+          id="objectClassification"
+          className="input"
+        >
+          <option value="">Select object classification</option>
+          {OBJECT_CLASSIFICATIONS.map((classification) => (
+            <option key={classification.id} value={classification.id}>
+              {classification.icon} {classification.name}
+            </option>
+          ))}
+        </select>
+        <p className="text-xs text-gray-500 mt-1">
+          Categorization by object type or use
+        </p>
+        
+        {/* Custom Object Classification Input */}
+        {objectClassificationSelection === 'custom' && (
+          <div className="mt-3">
+            <label htmlFor="customObjectClassification" className="block text-sm font-medium text-gray-700 mb-1">
+              Specify Object Type *
+            </label>
+            <input
+              type="text"
+              id="customObjectClassification"
+              value={customObjectClassification}
+              onChange={(e) => setCustomObjectClassification(e.target.value)}
+              placeholder="e.g., Manuscript, Amulet, Mirror..."
+              className="input"
+              maxLength={50}
+            />
           </div>
         )}
       </div>
