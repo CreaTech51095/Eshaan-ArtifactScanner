@@ -1,12 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserRound } from 'lucide-react'
 import authService from '../services/auth'
 import toast from 'react-hot-toast'
+import { Artifact } from '../types/artifact'
+import { getArtifacts } from '../services/artifacts'
 
 const WelcomePage: React.FC = () => {
   const navigate = useNavigate()
   const [guestLoading, setGuestLoading] = useState(false)
+  const [featuredArtifacts, setFeaturedArtifacts] = useState<Artifact[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    loadFeaturedArtifacts()
+  }, [])
+
+  const loadFeaturedArtifacts = async () => {
+    try {
+      const artifacts = await getArtifacts()
+      // Get the 6 most recent artifacts with photos
+      const withPhotos = artifacts
+        .filter(a => a.photos && a.photos.length > 0)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 6)
+      setFeaturedArtifacts(withPhotos)
+    } catch (error) {
+      console.error('Error loading featured artifacts:', error)
+      // Fail silently - page still works without featured artifacts
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleGuestLogin = async () => {
     setGuestLoading(true)
@@ -98,116 +123,81 @@ const WelcomePage: React.FC = () => {
 
       {/* Featured Artifacts Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-8">
+        <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold text-archaeological-charcoal mb-2 underline">
-            Artifacts of the week : Explore Museums
+            Explore Recent Artifacts
           </h2>
+          <p className="text-archaeological-olive">
+            Discover the latest additions to our collection
+          </p>
         </div>
 
-        {/* Museum Sections */}
-        <div className="space-y-12">
-          {/* Rosicrucian Egyptian Museum */}
-          <div>
-            <h3 className="text-2xl font-bold text-archaeological-charcoal mb-6">
-              Rosicrucian Egyptian Museum
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              {/* Sample artifacts - to be populated from real data */}
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
-                  <span className="text-6xl">🏺</span>
-                </div>
-                <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Washing Set</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
-                </div>
-              </div>
-
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-cyan-100 to-cyan-200 flex items-center justify-center">
-                  <span className="text-6xl">🔪</span>
-                </div>
-                <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Razors</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
-                </div>
-              </div>
-
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-                  <span className="text-6xl">🪔</span>
-                </div>
-                <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Lamps</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-archaeological-lightBrown/30 p-6 rounded-lg border-2 border-archaeological-lightBrown">
-              <p className="text-archaeological-charcoal text-center">
-                At the Rosicrucian Egyptian Museum, the past tells a story. Visit the Plowing Man Model,
-                and learn about a side of history recently uncovered. Ancient Egyptian beliefs in afterlife
-                awaken our souls? Take a tour of the Rosicrucian to find out more.
-              </p>
-            </div>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+            <p className="text-archaeological-olive mt-4">Loading artifacts...</p>
           </div>
-
-          {/* San Diego Archaeological Center */}
-          <div>
-            <h3 className="text-2xl font-bold text-archaeological-charcoal mb-6">
-              San Diego Archaeological Center
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center">
-                  <span className="text-6xl">🧺</span>
-                </div>
+        ) : featuredArtifacts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {featuredArtifacts.map((artifact) => (
+              <div 
+                key={artifact.id}
+                onClick={() => {
+                  // For guests/visitors, prompt to create account
+                  toast('Please log in or create an account to view full details', {
+                    icon: '🔒',
+                    duration: 3000
+                  })
+                  navigate('/register')
+                }}
+                className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow"
+              >
+                {artifact.photos && artifact.photos.length > 0 && (
+                  <div className="h-64 overflow-hidden bg-archaeological-lightBrown">
+                    <img
+                      src={artifact.photos[0].url}
+                      alt={artifact.name}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
                 <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Woven Basket</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
+                  <h4 className="font-bold text-lg text-archaeological-charcoal mb-1 truncate">
+                    {artifact.name}
+                  </h4>
+                  {artifact.discoverySite && (
+                    <p className="text-sm text-archaeological-olive truncate">
+                      📍 {artifact.discoverySite}
+                    </p>
+                  )}
+                  {artifact.objectClassification && (
+                    <span className="inline-block mt-2 px-2 py-1 text-xs font-medium bg-primary-100 text-primary-800 rounded">
+                      {artifact.objectClassification}
+                    </span>
+                  )}
                 </div>
               </div>
-
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                  <span className="text-6xl">🍶</span>
-                </div>
-                <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Wine Jar</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
-                </div>
-              </div>
-
-              <div className="card overflow-hidden cursor-pointer hover:shadow-xl transition-shadow">
-                <div className="h-64 bg-gradient-to-br from-slate-800 to-slate-900 flex items-center justify-center">
-                  <span className="text-6xl">🗿</span>
-                </div>
-                <div className="card-content">
-                  <h4 className="font-bold text-lg text-archaeological-charcoal">Shabti</h4>
-                  <p className="text-sm text-archaeological-olive">Rosicrucian Egyptian Museum</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-archaeological-lightBrown/30 p-6 rounded-lg border-2 border-archaeological-lightBrown">
-              <p className="text-archaeological-charcoal text-center">
-                Happy Halloween from the San Diego Archaeological Center! These innocent looking pearly dolls
-                carry a dark side. A girl on the way to a ball, dead from being frozen? Explore this chilling
-                story down at the center.
-              </p>
-            </div>
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="text-center py-12 bg-archaeological-warmGray rounded-lg">
+            <p className="text-archaeological-olive text-lg mb-4">
+              No artifacts available yet. Be the first to add one!
+            </p>
+          </div>
+        )}
 
-        {/* CTA Button */}
-        <div className="mt-16 text-center">
+        {/* CTA Buttons */}
+        <div className="mt-16 text-center space-y-4">
           <button
             onClick={() => navigate('/register')}
             className="btn btn-primary btn-lg text-xl px-12 py-4"
           >
-            Explore Ancient Artifacts!
+            Explore All Artifacts!
           </button>
+          <p className="text-archaeological-olive">
+            Create an account to add your own discoveries
+          </p>
         </div>
       </div>
 
