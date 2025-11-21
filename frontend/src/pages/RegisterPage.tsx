@@ -1,9 +1,9 @@
 import React from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-import LoginForm from '../components/auth/LoginForm'
+import RegisterForm from '../components/auth/RegisterForm'
 
-const LoginPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
@@ -26,49 +26,35 @@ const LoginPage: React.FC = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
               />
             </svg>
           </div>
           <h1 className="mt-6 text-3xl font-extrabold text-archaeological-charcoal">
-            Log in to archDB
+            Create Your Account
           </h1>
           <p className="mt-2 text-sm text-archaeological-charcoal">
-            Access your archaeological artifact collection
+            Join the Archaeological Artifacts community
           </p>
         </div>
 
-        <LoginForm onSwitchToRegister={() => navigate('/register')} />
+        <RegisterForm onSwitchToLogin={() => navigate('/login')} />
 
         <div className="mt-4 text-center">
           <p className="text-sm text-archaeological-olive">
-            Don't have an account?{' '}
+            Already have an account?{' '}
             <button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/login')}
               className="font-medium text-primary-600 hover:text-primary-500 underline"
             >
-              Create one here
+              Log in here
             </button>
           </p>
-        </div>
-
-        <div className="mt-8 text-center">
-          <div className="text-xs text-archaeological-olive">
-            <p>Demo Credentials:</p>
-            <p className="mt-1">
-              <strong>Admin:</strong> admin@university.edu / admin123
-            </p>
-            <p>
-              <strong>Archaeologist:</strong> archaeologist@university.edu / archaeologist123
-            </p>
-            <p>
-              <strong>Researcher:</strong> researcher@university.edu / researcher123
-            </p>
-          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default LoginPage
+export default RegisterPage
+

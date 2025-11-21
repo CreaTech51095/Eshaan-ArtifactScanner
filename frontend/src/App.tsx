@@ -2,8 +2,11 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './hooks/useAuth'
 import { useOfflineSyncContext } from './contexts/OfflineSyncContext'
 import { GroupProvider } from './contexts/GroupContext'
+import WelcomePage from './pages/WelcomePage'
 import LoginPage from './pages/LoginPage'
+import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import DiscoverPage from './pages/DiscoverPage'
 import ArtifactListPage from './pages/ArtifactListPage'
 import ArtifactCreatePage from './pages/ArtifactCreatePage'
 import ArtifactEditPage from './pages/ArtifactEditPage'
@@ -20,6 +23,8 @@ import GroupListPage from './pages/GroupListPage'
 import GroupCreatePage from './pages/GroupCreatePage'
 import GroupDetailPage from './pages/GroupDetailPage'
 import BrowseGroupsPage from './pages/BrowseGroupsPage'
+import MeetTheTeamPage from './pages/MeetTheTeamPage'
+import ContactUsPage from './pages/ContactUsPage'
 import LoadingSpinner from './components/common/LoadingSpinner'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import AppHeader from './components/common/AppHeader'
@@ -47,17 +52,33 @@ function App() {
             />
           )}
           <Routes>
+          {/* Public Routes */}
+          <Route path="/welcome" element={<WelcomePage />} />
+          <Route path="/team" element={<MeetTheTeamPage />} />
+          <Route path="/contact" element={<ContactUsPage />} />
+          
+          {/* Auth Routes */}
           <Route 
             path="/login" 
             element={user ? <Navigate to="/dashboard" replace /> : <LoginPage />} 
           />
           <Route 
+            path="/register" 
+            element={user ? <Navigate to="/dashboard" replace /> : <RegisterPage />} 
+          />
+          
+          {/* Protected Routes */}
+          <Route 
             path="/dashboard" 
-            element={user ? <DashboardPage /> : <Navigate to="/login" replace />} 
+            element={user ? <DashboardPage /> : <Navigate to="/welcome" replace />} 
+          />
+          <Route 
+            path="/discover" 
+            element={user ? <DiscoverPage /> : <Navigate to="/welcome" replace />} 
           />
           <Route 
             path="/artifacts" 
-            element={user ? <ArtifactListPage /> : <Navigate to="/login" replace />} 
+            element={user ? <ArtifactListPage /> : <Navigate to="/welcome" replace />} 
           />
           <Route 
             path="/artifacts/new" 
@@ -121,7 +142,7 @@ function App() {
           />
           <Route 
             path="/" 
-            element={<Navigate to={user ? "/dashboard" : "/login"} replace />} 
+            element={<Navigate to={user ? "/dashboard" : "/welcome"} replace />} 
           />
           </Routes>
         </div>
