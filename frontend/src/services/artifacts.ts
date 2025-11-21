@@ -178,7 +178,8 @@ export const createArtifact = async (
       version: 1,
       qrCodeUrl: null, // Will be updated after document creation
       photos: [], // Will be updated after photo uploads
-      groupId: data.groupId || null // Optional group assignment
+      groupId: data.groupId || null, // Optional group assignment
+      gpsLocation: data.gpsLocation || null // Optional GPS coordinates
     }
 
     // Add to Firestore

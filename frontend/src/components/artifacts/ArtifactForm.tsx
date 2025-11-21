@@ -1,14 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { CreateArtifactRequest } from '../../types/artifact'
+import { CreateArtifactRequest, GpsLocation } from '../../types/artifact'
 import { ARTIFACT_TYPES, ARTIFACT_MATERIALS, METAL_SUBTYPES, OBJECT_CLASSIFICATIONS } from '../../types/artifact'
-import { Camera, X, Upload } from 'lucide-react'
+import { Camera, X, Upload, MapPin, Loader, CheckCircle, AlertCircle, Edit2 } from 'lucide-react'
 import { SUPPORTED_IMAGE_TYPES, MAX_FILE_SIZE } from '../../types/photo'
 import CameraCapture from './CameraCapture'
 import GroupSelector from '../groups/GroupSelector'
 import { Group } from '../../types/group'
 import { getUserGroups } from '../../services/groups'
 import { useAuth } from '../../hooks/useAuth'
+import { getCurrentLocation, formatCoordinates, validateCoordinates, parseCoordinates, getGoogleMapsLink } from '../../utils/geolocation'
+import LocationMap from '../common/LocationMap'
 
 interface ArtifactFormProps {
   onSubmit: (data: CreateArtifactRequest & { photosToKeep?: string[] }) => void
@@ -43,6 +45,14 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [userGroups, setUserGroups] = useState<Group[]>([])
   const [selectedGroupId, setSelectedGroupId] = useState<string | undefined>(initialData?.groupId)
   
+  // GPS Location state
+  const [gpsLocation, setGpsLocation] = useState<GpsLocation | null>(initialData?.gpsLocation || null)
+  const [gpsStatus, setGpsStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [gpsError, setGpsError] = useState<string>('')
+  const [showManualGpsEntry, setShowManualGpsEntry] = useState(false)
+  const [manualLat, setManualLat] = useState('')
+  const [manualLng, setManualLng] = useState('')
+  
   // New material-based categorization
   const [materialSelection, setMaterialSelection] = useState<string>(initialData?.material || '')
   const [customMaterial, setCustomMaterial] = useState<string>('')
@@ -70,6 +80,64 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
     }
     loadUserGroups()
   }, [user])
+
+  // Automatically attempt to get GPS location when form loads (only for new artifacts)
+  useEffect(() => {
+    if (!isEditMode && !gpsLocation) {
+      captureGpsLocation()
+    }
+  }, []) // Empty dependency array - only run once on mount
+
+  const captureGpsLocation = async () => {
+    setGpsStatus('loading')
+    setGpsError('')
+    
+    try {
+      const result = await getCurrentLocation(10000, true)
+      
+      if (result.success && result.location) {
+        setGpsLocation(result.location)
+        setGpsStatus('success')
+        console.log('✅ GPS location captured:', result.location)
+      } else if (result.error) {
+        setGpsStatus('error')
+        setGpsError(result.error.message)
+        console.warn('⚠️ GPS capture failed:', result.error.message)
+      }
+    } catch (error) {
+      setGpsStatus('error')
+      setGpsError('Failed to get location. Please try again or enter manually.')
+      console.error('❌ GPS error:', error)
+    }
+  }
+
+  const handleManualGpsSubmit = () => {
+    const lat = parseFloat(manualLat)
+    const lng = parseFloat(manualLng)
+    
+    if (!validateCoordinates(lat, lng)) {
+      setGpsError('Invalid coordinates. Latitude must be between -90 and 90, longitude between -180 and 180.')
+      return
+    }
+    
+    setGpsLocation({
+      lat,
+      lng,
+      timestamp: Date.now()
+    })
+    setGpsStatus('success')
+    setGpsError('')
+    setShowManualGpsEntry(false)
+    setManualLat('')
+    setManualLng('')
+  }
+
+  const clearGpsLocation = () => {
+    setGpsLocation(null)
+    setGpsStatus('idle')
+    setGpsError('')
+    setShowManualGpsEntry(false)
+  }
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -187,6 +255,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       material: finalMaterial || undefined,
       materialSubtype: (materialSelection === 'metal' && finalMetalSubtype) ? finalMetalSubtype : undefined,
       objectClassification: finalObjectClassification || undefined,
+      gpsLocation: gpsLocation || undefined,
       photos: selectedPhotos,
       groupId: selectedGroupId === 'uncategorized' ? undefined : selectedGroupId,
       ...(isEditMode && { photosToKeep: keptPhotoIds })
@@ -439,6 +508,194 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
         />
         {errors.location && (
           <p className="text-red-600 text-sm mt-1">{errors.location.message}</p>
+        )}
+      </div>
+
+      {/* GPS Location Capture */}
+      <div className="border rounded-lg p-4 bg-gray-50">
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            GPS Coordinates <span className="text-gray-500 font-normal">(Optional)</span>
+          </label>
+          
+          {gpsLocation && (
+            <button
+              type="button"
+              onClick={clearGpsLocation}
+              className="text-sm text-red-600 hover:text-red-700 flex items-center gap-1"
+            >
+              <X className="w-3 h-3" />
+              Clear
+            </button>
+          )}
+        </div>
+        
+        <p className="text-xs text-gray-600 mb-3">
+          Automatically capture your device's GPS coordinates
+        </p>
+
+        {/* GPS Status Display */}
+        {gpsStatus === 'loading' && (
+          <div className="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <Loader className="w-4 h-4 text-blue-600 animate-spin" />
+            <span className="text-sm text-blue-800">Getting your location...</span>
+          </div>
+        )}
+
+        {gpsStatus === 'success' && gpsLocation && (
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 p-3 bg-green-50 border border-green-200 rounded-md">
+              <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-green-800">Location Captured</p>
+                <p className="text-xs text-green-700 font-mono mt-1">
+                  {formatCoordinates(gpsLocation.lat, gpsLocation.lng)}
+                </p>
+                {gpsLocation.accuracy && (
+                  <p className="text-xs text-green-600 mt-1">
+                    Accuracy: ±{Math.round(gpsLocation.accuracy)}m
+                  </p>
+                )}
+              </div>
+              <a
+                href={getGoogleMapsLink(gpsLocation.lat, gpsLocation.lng)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-green-700 hover:text-green-800 underline whitespace-nowrap"
+              >
+                View on Map
+              </a>
+            </div>
+            
+            {/* Map Preview */}
+            <div className="border border-green-200 rounded-lg overflow-hidden">
+              <LocationMap
+                lat={gpsLocation.lat}
+                lng={gpsLocation.lng}
+                zoom={15}
+                height="250px"
+                markerLabel="Artifact Location"
+                accuracy={gpsLocation.accuracy}
+              />
+            </div>
+          </div>
+        )}
+
+        {gpsStatus === 'error' && (
+          <div className="space-y-3">
+            <div className="flex items-start gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+              <AlertCircle className="w-4 h-4 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-yellow-800">Location Not Available</p>
+                <p className="text-xs text-yellow-700 mt-1">{gpsError}</p>
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={captureGpsLocation}
+                className="flex-1 btn btn-outline btn-sm flex items-center justify-center gap-2"
+              >
+                <MapPin className="w-4 h-4" />
+                Try Again
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowManualGpsEntry(!showManualGpsEntry)}
+                className="flex-1 btn btn-outline btn-sm flex items-center justify-center gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                Enter Manually
+              </button>
+            </div>
+          </div>
+        )}
+
+        {gpsStatus === 'idle' && !gpsLocation && (
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={captureGpsLocation}
+              className="w-full btn btn-outline btn-sm flex items-center justify-center gap-2"
+            >
+              <MapPin className="w-4 h-4" />
+              Capture GPS Location
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowManualGpsEntry(!showManualGpsEntry)}
+              className="w-full text-sm text-gray-600 hover:text-gray-700 underline"
+            >
+              Or enter coordinates manually
+            </button>
+          </div>
+        )}
+
+        {/* Manual GPS Entry */}
+        {showManualGpsEntry && (
+          <div className="mt-3 p-3 bg-white border border-gray-200 rounded-md space-y-3">
+            <p className="text-sm font-medium text-gray-700">Enter Coordinates Manually</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label htmlFor="manualLat" className="block text-xs font-medium text-gray-600 mb-1">
+                  Latitude
+                </label>
+                <input
+                  type="number"
+                  id="manualLat"
+                  value={manualLat}
+                  onChange={(e) => setManualLat(e.target.value)}
+                  step="any"
+                  min="-90"
+                  max="90"
+                  placeholder="e.g., 40.7128"
+                  className="input text-sm"
+                />
+              </div>
+              <div>
+                <label htmlFor="manualLng" className="block text-xs font-medium text-gray-600 mb-1">
+                  Longitude
+                </label>
+                <input
+                  type="number"
+                  id="manualLng"
+                  value={manualLng}
+                  onChange={(e) => setManualLng(e.target.value)}
+                  step="any"
+                  min="-180"
+                  max="180"
+                  placeholder="e.g., -74.0060"
+                  className="input text-sm"
+                />
+              </div>
+            </div>
+            {gpsError && showManualGpsEntry && (
+              <p className="text-xs text-red-600">{gpsError}</p>
+            )}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleManualGpsSubmit}
+                className="flex-1 btn btn-primary btn-sm"
+              >
+                Save Coordinates
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowManualGpsEntry(false)
+                  setGpsError('')
+                  setManualLat('')
+                  setManualLng('')
+                }}
+                className="flex-1 btn btn-secondary btn-sm"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import App from './App.tsx'
 import './index.css'
+import 'leaflet/dist/leaflet.css'
 import { AuthProvider } from './contexts/AuthContext'
 import { OfflineSyncProvider } from './contexts/OfflineSyncContext'
 

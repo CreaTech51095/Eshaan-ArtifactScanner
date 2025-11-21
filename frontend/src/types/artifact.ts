@@ -14,6 +14,13 @@ export interface Photo {
   isThumbnail: boolean
 }
 
+export interface GpsLocation {
+  lat: number
+  lng: number
+  accuracy?: number // Accuracy in meters
+  timestamp?: number // When the location was captured
+}
+
 export interface Artifact {
   id: string
   qrCode: string
@@ -26,6 +33,7 @@ export interface Artifact {
   discoveryDate: string
   discoverySite: string
   location: string
+  gpsLocation?: GpsLocation // GPS coordinates where artifact was logged/scanned
   photos: Photo[]
   metadata?: Record<string, any>
   createdBy: string
@@ -47,6 +55,7 @@ export interface CreateArtifactRequest {
   discoveryDate: string
   discoverySite: string
   location: string
+  gpsLocation?: GpsLocation // GPS coordinates where artifact was logged
   photos: File[]
   metadata?: Record<string, any>
   groupId?: string // Optional: assign artifact to a group
@@ -62,6 +71,7 @@ export interface UpdateArtifactRequest {
   discoveryDate?: string
   discoverySite?: string
   location?: string
+  gpsLocation?: GpsLocation // GPS coordinates where artifact was logged
   photos?: File[]
   photosToKeep?: string[] // IDs of existing photos to keep
   metadata?: Record<string, any>

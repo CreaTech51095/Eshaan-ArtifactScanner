@@ -91,6 +91,7 @@ export const createArtifact = async (
         discoveryDate: data.discoveryDate,
         discoverySite: data.discoverySite,
         location: data.location,
+        gpsLocation: data.gpsLocation,
         photos: tempPhotos, // Include temp photos for offline preview
         metadata: data.metadata,
         createdBy: 'current-user', // Will be updated when synced

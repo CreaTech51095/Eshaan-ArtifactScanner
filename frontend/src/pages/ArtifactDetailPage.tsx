@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Package, QrCode, MessageSquare } from 'lucide-react'
+import { ArrowLeft, Edit, Trash2, MapPin, Calendar, Package, QrCode, MessageSquare, Globe } from 'lucide-react'
 import toast from 'react-hot-toast'
 import LoadingSpinner from '../components/common/LoadingSpinner'
 import ArtifactQRCode from '../components/artifacts/ArtifactQRCode'
@@ -10,6 +10,8 @@ import { useAuth } from '../hooks/useAuth'
 import { getUserPermissions, getUserPermissionsInGroup } from '../types/user'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import { useGroupPermissions } from '../hooks/useGroupPermissions'
+import { formatCoordinates, getGoogleMapsLink } from '../utils/geolocation'
+import LocationMap from '../components/common/LocationMap'
 
 const ArtifactDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -255,14 +257,41 @@ const ArtifactDetailPage: React.FC = () => {
                 </div>
               </div>
 
-              {artifact.gpsCoordinates && (
-                <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-archaeological-sage mt-1" />
-                  <div>
-                    <p className="text-sm font-medium text-archaeological-olive">GPS Coordinates</p>
-                    <p className="text-archaeological-charcoal">
-                      {artifact.gpsCoordinates.latitude}, {artifact.gpsCoordinates.longitude}
-                    </p>
+              {artifact.gpsLocation && (
+                <div className="md:col-span-2">
+                  <div className="flex items-start gap-3 mb-3">
+                    <Globe className="w-5 h-5 text-archaeological-sage mt-1" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-archaeological-olive">GPS Coordinates</p>
+                      <p className="text-archaeological-charcoal font-mono text-sm">
+                        {formatCoordinates(artifact.gpsLocation.lat, artifact.gpsLocation.lng)}
+                      </p>
+                      {artifact.gpsLocation.accuracy && (
+                        <p className="text-xs text-archaeological-sage mt-1">
+                          Accuracy: ±{Math.round(artifact.gpsLocation.accuracy)}m
+                        </p>
+                      )}
+                      <a
+                        href={getGoogleMapsLink(artifact.gpsLocation.lat, artifact.gpsLocation.lng)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 underline mt-1 inline-block"
+                      >
+                        View on Google Maps →
+                      </a>
+                    </div>
+                  </div>
+                  
+                  {/* Interactive Map */}
+                  <div className="mt-3">
+                    <LocationMap
+                      lat={artifact.gpsLocation.lat}
+                      lng={artifact.gpsLocation.lng}
+                      zoom={15}
+                      height="300px"
+                      markerLabel={artifact.name}
+                      accuracy={artifact.gpsLocation.accuracy}
+                    />
                   </div>
                 </div>
               )}
