@@ -272,3 +272,120 @@ export const parseCoordinates = (coordString: string): { lat: number; lng: numbe
   }
 }
 
+/**
+ * Geocoding result from location search
+ */
+export interface GeocodingResult {
+  lat: number
+  lng: number
+  displayName: string
+  address?: {
+    city?: string
+    state?: string
+    country?: string
+    countryCode?: string
+  }
+}
+
+/**
+ * Search for a location by address/place name using Nominatim (OpenStreetMap)
+ * Returns coordinates and formatted address
+ * 
+ * @param query - Location search query (e.g., "New York City", "Paris, France", "90210")
+ * @returns Array of matching locations
+ */
+export const searchLocation = async (query: string): Promise<GeocodingResult[]> => {
+  if (!query || query.trim().length < 3) {
+    return []
+  }
+
+  try {
+    const encodedQuery = encodeURIComponent(query.trim())
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/search?` +
+      `q=${encodedQuery}&` +
+      `format=json&` +
+      `addressdetails=1&` +
+      `limit=5`,
+      {
+        headers: {
+          'User-Agent': 'ArtifactScanner/1.0' // Required by Nominatim
+        }
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Geocoding request failed')
+    }
+
+    const data = await response.json()
+
+    return data.map((result: any) => ({
+      lat: parseFloat(result.lat),
+      lng: parseFloat(result.lon),
+      displayName: result.display_name,
+      address: {
+        city: result.address?.city || result.address?.town || result.address?.village,
+        state: result.address?.state,
+        country: result.address?.country,
+        countryCode: result.address?.country_code
+      }
+    }))
+  } catch (error) {
+    console.error('Geocoding error:', error)
+    return []
+  }
+}
+
+/**
+ * Reverse geocoding - get address from coordinates
+ * 
+ * @param lat - Latitude
+ * @param lng - Longitude
+ * @returns Address information
+ */
+export const reverseGeocode = async (
+  lat: number, 
+  lng: number
+): Promise<GeocodingResult | null> => {
+  if (!validateCoordinates(lat, lng)) {
+    return null
+  }
+
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?` +
+      `lat=${lat}&` +
+      `lon=${lng}&` +
+      `format=json&` +
+      `addressdetails=1`,
+      {
+        headers: {
+          'User-Agent': 'ArtifactScanner/1.0'
+        }
+      }
+    )
+
+    if (!response.ok) {
+      return null
+    }
+
+    const result = await response.json()
+
+    return {
+      lat: parseFloat(result.lat),
+      lng: parseFloat(result.lon),
+      displayName: result.display_name,
+      address: {
+        city: result.address?.city || result.address?.town || result.address?.village,
+        state: result.address?.state,
+        country: result.address?.country,
+        countryCode: result.address?.country_code
+      }
+    }
+  } catch (error) {
+    console.error('Reverse geocoding error:', error)
+    return null
+  }
+}
+

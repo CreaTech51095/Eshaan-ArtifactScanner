@@ -9,7 +9,7 @@ import GroupSelector from '../groups/GroupSelector'
 import { Group } from '../../types/group'
 import { getUserGroups } from '../../services/groups'
 import { useAuth } from '../../hooks/useAuth'
-import { getCurrentLocation, formatCoordinates, validateCoordinates, parseCoordinates, getGoogleMapsLink } from '../../utils/geolocation'
+import { getCurrentLocation, formatCoordinates, validateCoordinates, parseCoordinates, getGoogleMapsLink, searchLocation, GeocodingResult } from '../../utils/geolocation'
 import LocationMap from '../common/LocationMap'
 
 interface ArtifactFormProps {
@@ -52,6 +52,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
   const [showManualGpsEntry, setShowManualGpsEntry] = useState(false)
   const [manualLat, setManualLat] = useState('')
   const [manualLng, setManualLng] = useState('')
+  
+  // Location search state
+  const [locationSearch, setLocationSearch] = useState('')
+  const [searchResults, setSearchResults] = useState<GeocodingResult[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [showSearchResults, setShowSearchResults] = useState(false)
   
   // New material-based categorization
   const [materialSelection, setMaterialSelection] = useState<string>(initialData?.material || '')
@@ -136,6 +142,46 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
     setGpsLocation(null)
     setGpsStatus('idle')
     setGpsError('')
+    setShowManualGpsEntry(false)
+    setLocationSearch('')
+    setSearchResults([])
+  }
+
+  // Handle location search with debouncing
+  useEffect(() => {
+    const searchTimer = setTimeout(async () => {
+      if (locationSearch.trim().length >= 3) {
+        setIsSearching(true)
+        try {
+          const results = await searchLocation(locationSearch)
+          setSearchResults(results)
+          setShowSearchResults(true)
+        } catch (error) {
+          console.error('Location search error:', error)
+          setSearchResults([])
+        } finally {
+          setIsSearching(false)
+        }
+      } else {
+        setSearchResults([])
+        setShowSearchResults(false)
+      }
+    }, 500) // Debounce for 500ms
+
+    return () => clearTimeout(searchTimer)
+  }, [locationSearch])
+
+  const handleLocationSelect = (result: GeocodingResult) => {
+    setGpsLocation({
+      lat: result.lat,
+      lng: result.lng,
+      timestamp: Date.now()
+    })
+    setGpsStatus('success')
+    setGpsError('')
+    setLocationSearch('')
+    setSearchResults([])
+    setShowSearchResults(false)
     setShowManualGpsEntry(false)
   }
 
@@ -614,7 +660,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
         )}
 
         {gpsStatus === 'idle' && !gpsLocation && (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <button
               type="button"
               onClick={captureGpsLocation}
@@ -623,12 +669,78 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               <MapPin className="w-4 h-4" />
               Capture GPS Location
             </button>
+            
+            <div className="text-center text-sm text-gray-500">or</div>
+            
+            {/* Location Search */}
+            <div className="relative">
+              <label htmlFor="locationSearch" className="block text-sm font-medium text-gray-700 mb-1">
+                Search by City, State, or Country
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="locationSearch"
+                  value={locationSearch}
+                  onChange={(e) => setLocationSearch(e.target.value)}
+                  placeholder="e.g., New York City, Paris, London, 90210"
+                  className="input pr-10"
+                />
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                    <Loader className="w-4 h-4 text-gray-400 animate-spin" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Search Results Dropdown */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                  {searchResults.map((result, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleLocationSelect(result)}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {result.address?.city || result.displayName.split(',')[0]}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {result.displayName}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-1 font-mono">
+                            {result.lat.toFixed(4)}, {result.lng.toFixed(4)}
+                          </p>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+              
+              {showSearchResults && searchResults.length === 0 && locationSearch.length >= 3 && !isSearching && (
+                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4">
+                  <p className="text-sm text-gray-500 text-center">
+                    No locations found. Try a different search term.
+                  </p>
+                </div>
+              )}
+            </div>
+            
             <button
               type="button"
-              onClick={() => setShowManualGpsEntry(!showManualGpsEntry)}
+              onClick={() => {
+                setShowManualGpsEntry(!showManualGpsEntry)
+                setLocationSearch('')
+                setSearchResults([])
+              }}
               className="w-full text-sm text-gray-600 hover:text-gray-700 underline"
             >
-              Or enter coordinates manually
+              Or enter exact coordinates manually
             </button>
           </div>
         )}
@@ -636,11 +748,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
         {/* Manual GPS Entry */}
         {showManualGpsEntry && (
           <div className="mt-3 p-3 bg-white border border-gray-200 rounded-md space-y-3">
-            <p className="text-sm font-medium text-gray-700">Enter Coordinates Manually</p>
+            <p className="text-sm font-medium text-gray-700">Enter Exact Coordinates</p>
+            <p className="text-xs text-gray-500">Enter precise latitude and longitude values</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label htmlFor="manualLat" className="block text-xs font-medium text-gray-600 mb-1">
-                  Latitude
+                  Latitude (-90 to 90)
                 </label>
                 <input
                   type="number"
@@ -656,7 +769,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               </div>
               <div>
                 <label htmlFor="manualLng" className="block text-xs font-medium text-gray-600 mb-1">
-                  Longitude
+                  Longitude (-180 to 180)
                 </label>
                 <input
                   type="number"
