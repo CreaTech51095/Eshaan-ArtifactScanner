@@ -100,8 +100,8 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
       </div>
 
       {members.length === 0 ? (
-        <div className="text-center py-8 text-gray-500">
-          <Users className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+        <div className="text-center py-8 text-archaeological-olive">
+          <Users className="w-12 h-12 mx-auto mb-2 text-archaeological-sage" />
           <p>No members yet</p>
         </div>
       ) : (
@@ -113,7 +113,7 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
             return (
               <div
                 key={member.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                className="flex items-center justify-between p-3 bg-archaeological-warmGray rounded-lg"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
@@ -121,14 +121,14 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">
+                      <span className="font-medium text-archaeological-charcoal">
                         {userDetails?.displayName || userDetails?.username || 'Unknown User'}
                       </span>
                       {isCurrentUser && (
-                        <span className="text-xs text-gray-500">(You)</span>
+                        <span className="text-xs text-archaeological-olive">(You)</span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-archaeological-olive">
                       <span>{userDetails?.email}</span>
                       {member.role === 'group_admin' && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
@@ -144,7 +144,7 @@ const GroupMembersList: React.FC<GroupMembersListProps> = ({
                   <div className="flex gap-2">
                     <button
                       onClick={() => setEditingMember(member)}
-                      className="btn btn-ghost btn-sm text-gray-600 hover:text-gray-700 hover:bg-gray-100"
+                      className="btn btn-ghost btn-sm text-archaeological-olive hover:text-archaeological-charcoal hover:bg-archaeological-lightBrown"
                     >
                       <Settings className="w-4 h-4" />
                       Edit

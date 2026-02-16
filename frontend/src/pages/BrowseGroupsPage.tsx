@@ -80,18 +80,18 @@ const BrowseGroupsPage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-archaeological-warmGray flex items-center justify-center">
         <LoadingSpinner text="Loading groups..." />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Browse Public Groups</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">Browse Public Groups</h1>
+          <p className="mt-2 text-archaeological-olive">
             Discover and join groups to collaborate with teams
           </p>
         </div>
@@ -99,7 +99,7 @@ const BrowseGroupsPage: React.FC = () => {
         {/* Search Bar */}
         <div className="mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-archaeological-sage w-5 h-5" />
             <input
               type="text"
               placeholder="Search public groups..."
@@ -114,11 +114,11 @@ const BrowseGroupsPage: React.FC = () => {
         {filteredGroups.length === 0 ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <Globe className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              <Globe className="w-16 h-16 text-archaeological-sage mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-archaeological-charcoal mb-2">
                 {searchTerm ? 'No groups found' : 'No public groups available'}
               </h3>
-              <p className="text-gray-600 mb-6">
+              <p className="text-archaeological-olive mb-6">
                 {searchTerm
                   ? 'Try adjusting your search criteria'
                   : 'Public groups will appear here when they are created'}
@@ -141,19 +141,19 @@ const BrowseGroupsPage: React.FC = () => {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900">
+                          <h3 className="text-lg font-semibold text-archaeological-charcoal">
                             {group.name}
                           </h3>
                           <Globe className="w-4 h-4 text-green-500" title="Public Group" />
                         </div>
 
                         {group.description && (
-                          <p className="text-sm text-gray-600 mb-3">
+                          <p className="text-sm text-archaeological-olive mb-3">
                             {group.description}
                           </p>
                         )}
 
-                        <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <div className="flex items-center gap-4 text-sm text-archaeological-olive">
                           <div className="flex items-center gap-1">
                             <Users className="w-4 h-4" />
                             <span>{group.memberCount || 0} members</span>
@@ -208,7 +208,7 @@ const BrowseGroupsPage: React.FC = () => {
 
         {/* Results count */}
         {filteredGroups.length > 0 && (
-          <div className="mt-6 text-center text-sm text-gray-500">
+          <div className="mt-6 text-center text-sm text-archaeological-olive">
             Showing {filteredGroups.length} public group{filteredGroups.length !== 1 ? 's' : ''}
           </div>
         )}

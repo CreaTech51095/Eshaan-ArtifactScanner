@@ -49,11 +49,11 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Add Member</h3>
+        <div className="flex items-center justify-between p-6 border-b border-archaeological-lightBrown">
+          <h3 className="text-lg font-semibold text-archaeological-charcoal">Add Member</h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-archaeological-sage hover:text-archaeological-olive"
             disabled={loading}
           >
             <X className="w-5 h-5" />
@@ -76,7 +76,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
               required
               disabled={loading}
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-archaeological-olive mt-1">
               Enter the email address of the user you want to add
             </p>
           </div>
@@ -95,7 +95,7 @@ const AddMemberDialog: React.FC<AddMemberDialogProps> = ({
               <option value="member">Member</option>
               <option value="group_admin">Group Admin</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-archaeological-olive mt-1">
               {role === 'group_admin'
                 ? 'Group admins can manage members and group settings'
                 : 'Members can view and edit artifacts based on their permissions'}

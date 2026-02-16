@@ -135,7 +135,7 @@ const ContactUsPage: React.FC = () => {
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="name" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                       Your Name *
                     </label>
                     <input
@@ -151,7 +151,7 @@ const ContactUsPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="email" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                       Your Email *
                     </label>
                     <input
@@ -167,7 +167,7 @@ const ContactUsPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="subject" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                       Subject *
                     </label>
                     <select
@@ -188,7 +188,7 @@ const ContactUsPage: React.FC = () => {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label htmlFor="message" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                       Message *
                     </label>
                     <textarea
@@ -264,4 +264,5 @@ const ContactUsPage: React.FC = () => {
 }
 
 export default ContactUsPage
+
 

@@ -156,8 +156,8 @@ const DiscoverPage: React.FC = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
         {feedItems.length === 0 ? (
           <div className="card text-center py-12">
-            <p className="text-gray-500 text-lg">No artifacts to discover yet.</p>
-            <p className="text-gray-400 mt-2">Start adding artifacts to build your collection!</p>
+            <p className="text-archaeological-olive text-lg">No artifacts to discover yet.</p>
+            <p className="text-archaeological-sage mt-2">Start adding artifacts to build your collection!</p>
           </div>
         ) : (
           <div className="space-y-6">
@@ -246,7 +246,7 @@ const DiscoverPage: React.FC = () => {
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                         likedArtifacts.has(item.id)
                           ? 'bg-red-100 text-red-600 hover:bg-red-200'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          : 'bg-archaeological-lightBrown text-archaeological-olive hover:bg-archaeological-lightBrown'
                       }`}
                     >
                       <Heart 
@@ -262,7 +262,7 @@ const DiscoverPage: React.FC = () => {
                         e.stopPropagation()
                         handleShare(item)
                       }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-archaeological-lightBrown text-archaeological-olive hover:bg-archaeological-lightBrown transition-colors"
                     >
                       <Share2 className="w-5 h-5" />
                       <span className="text-sm font-medium">Share</span>
@@ -273,7 +273,7 @@ const DiscoverPage: React.FC = () => {
                         e.stopPropagation()
                         handleComment(item.id)
                       }}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-archaeological-lightBrown text-archaeological-olive hover:bg-archaeological-lightBrown transition-colors"
                     >
                       <MessageCircle className="w-5 h-5" />
                       <span className="text-sm font-medium">View Details</span>
@@ -290,4 +290,5 @@ const DiscoverPage: React.FC = () => {
 }
 
 export default DiscoverPage
+
 

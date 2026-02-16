@@ -36,6 +36,28 @@ export const addMember = async (
       throw new Error('User must be authenticated to add members')
     }
 
+    // Verify the group exists and check who created it
+    const groupDoc = await getDoc(doc(db, 'groups', groupId))
+    if (!groupDoc.exists()) {
+      throw new Error('Group not found')
+    }
+    
+    const groupData = groupDoc.data()
+    console.log('🔍 Debug - Group data:', {
+      groupId,
+      createdBy: groupData.createdBy,
+      currentUserId: currentUser.uid,
+      isCreator: groupData.createdBy === currentUser.uid
+    })
+
+    console.log('🔍 Debug - Adding member to group:', {
+      groupId,
+      currentUserId: currentUser.uid,
+      currentUserEmail: currentUser.email,
+      requestEmail: request.email,
+      requestRole: request.role
+    })
+
     let targetUserId: string
 
     // Find user by email or use provided userId
@@ -51,6 +73,7 @@ export const addMember = async (
       }
       
       targetUserId = usersSnapshot.docs[0].id
+      console.log('🔍 Debug - Found target user:', targetUserId)
     } else if (request.userId) {
       targetUserId = request.userId
     } else {
@@ -76,6 +99,13 @@ export const addMember = async (
       joinedAt: serverTimestamp(),
       invitedBy: currentUser.uid
     }
+
+    console.log('🔍 Debug - Attempting to create member record:', {
+      targetUserId,
+      groupId,
+      role: request.role,
+      invitedBy: currentUser.uid
+    })
 
     const docRef = await addDoc(collection(db, GROUP_MEMBERS_COLLECTION), memberData)
     console.log('✅ Member added successfully:', targetUserId)

@@ -107,7 +107,7 @@ const AdminPanelPage: React.FC = () => {
   const displayRequests = activeTab === 'pending' ? pendingRequests : allRequests
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/dashboard')}
@@ -120,11 +120,11 @@ const AdminPanelPage: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-archaeological-charcoal flex items-center gap-3">
                 <Shield className="w-8 h-8 text-primary-600" />
                 Admin Panel
               </h1>
-              <p className="mt-2 text-gray-600">
+              <p className="mt-2 text-archaeological-olive">
                 Manage role requests from users
               </p>
             </div>
@@ -164,14 +164,14 @@ const AdminPanelPage: React.FC = () => {
         {loading ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <p className="text-gray-500">Loading requests...</p>
+              <p className="text-archaeological-olive">Loading requests...</p>
             </div>
           </div>
         ) : displayRequests.length === 0 ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">
+              <Users className="w-12 h-12 text-archaeological-sage mx-auto mb-3" />
+              <p className="text-archaeological-olive">
                 {activeTab === 'pending' 
                   ? 'No pending requests'
                   : 'No role requests yet'}
@@ -185,15 +185,15 @@ const AdminPanelPage: React.FC = () => {
                 <div className="card-content">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="font-semibold text-gray-900">
+                      <h3 className="font-semibold text-archaeological-charcoal">
                         {request.username} ({request.userEmail})
                       </h3>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-archaeological-olive mt-1">
                         <span className="capitalize">{request.currentRole}</span>
                         {' → '}
                         <span className="capitalize font-medium">{request.requestedRole}</span>
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-archaeological-olive mt-1">
                         Submitted: {request.createdAt.toLocaleDateString()} at{' '}
                         {request.createdAt.toLocaleTimeString()}
                       </p>
@@ -202,8 +202,8 @@ const AdminPanelPage: React.FC = () => {
                   </div>
 
                   <div className="mb-4">
-                    <p className="text-sm font-medium text-gray-700 mb-1">Reason:</p>
-                    <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                    <p className="text-sm font-medium text-archaeological-charcoal mb-1">Reason:</p>
+                    <p className="text-sm text-archaeological-olive bg-archaeological-warmGray p-3 rounded">
                       {request.reason}
                     </p>
                   </div>
@@ -213,7 +213,7 @@ const AdminPanelPage: React.FC = () => {
                       {reviewingId === request.id ? (
                         <div className="space-y-3">
                           <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                            <label className="block text-sm font-medium text-archaeological-charcoal mb-1">
                               Review Notes (Optional)
                             </label>
                             <textarea
@@ -262,11 +262,11 @@ const AdminPanelPage: React.FC = () => {
 
                   {request.status !== 'pending' && (
                     <div className="border-t pt-4">
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-archaeological-olive">
                         <strong>Reviewed:</strong> {request.reviewedAt?.toLocaleDateString()}
                       </p>
                       {request.reviewNotes && (
-                        <p className="text-sm text-gray-600 mt-2 bg-gray-50 p-2 rounded">
+                        <p className="text-sm text-archaeological-olive mt-2 bg-archaeological-warmGray p-2 rounded">
                           <strong>Notes:</strong> {request.reviewNotes}
                         </p>
                       )}

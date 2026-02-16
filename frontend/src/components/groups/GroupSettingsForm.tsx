@@ -110,7 +110,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
               Group Privacy
             </label>
             <div className="space-y-2">
-              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+              <label className="flex items-center gap-3 p-3 border border-archaeological-lightBrown rounded-lg cursor-pointer hover:bg-archaeological-warmGray">
                 <input
                   type="radio"
                   name="privacy"
@@ -122,16 +122,16 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
                   })}
                   disabled={loading}
                 />
-                <Lock className="w-5 h-5 text-gray-500" />
+                <Lock className="w-5 h-5 text-archaeological-olive" />
                 <div>
                   <div className="font-medium">Private</div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-archaeological-olive">
                     Only invited members can see this group
                   </div>
                 </div>
               </label>
 
-              <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+              <label className="flex items-center gap-3 p-3 border border-archaeological-lightBrown rounded-lg cursor-pointer hover:bg-archaeological-warmGray">
                 <input
                   type="radio"
                   name="privacy"
@@ -143,10 +143,10 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
                   })}
                   disabled={loading}
                 />
-                <Globe className="w-5 h-5 text-gray-500" />
+                <Globe className="w-5 h-5 text-archaeological-olive" />
                 <div>
                   <div className="font-medium">Public</div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-archaeological-olive">
                     Anyone can see this group
                   </div>
                 </div>
@@ -170,7 +170,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
               />
               <span className="text-sm font-medium">Allow members to invite others</span>
             </label>
-            <p className="text-xs text-gray-500 ml-6 mt-1">
+            <p className="text-xs text-archaeological-olive ml-6 mt-1">
               If enabled, regular members can add new people to the group (not just admins)
             </p>
           </div>
@@ -181,7 +181,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
       <div className="card">
         <div className="card-header">
           <h3 className="text-lg font-semibold">Default Member Permissions</h3>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-archaeological-olive mt-1">
             These permissions will be applied to new members when they join
           </p>
         </div>
@@ -204,7 +204,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
             />
             <div>
               <span className="text-sm font-medium">View artifacts</span>
-              <p className="text-xs text-gray-500">Members can view all artifacts in this group</p>
+              <p className="text-xs text-archaeological-olive">Members can view all artifacts in this group</p>
             </div>
           </label>
 
@@ -226,7 +226,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
             />
             <div>
               <span className="text-sm font-medium">Create artifacts</span>
-              <p className="text-xs text-gray-500">Members can add new artifacts to this group</p>
+              <p className="text-xs text-archaeological-olive">Members can add new artifacts to this group</p>
             </div>
           </label>
 
@@ -248,7 +248,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
             />
             <div>
               <span className="text-sm font-medium">Edit artifacts</span>
-              <p className="text-xs text-gray-500">Members can modify existing artifacts in this group</p>
+              <p className="text-xs text-archaeological-olive">Members can modify existing artifacts in this group</p>
             </div>
           </label>
 
@@ -270,7 +270,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
             />
             <div>
               <span className="text-sm font-medium">Delete artifacts</span>
-              <p className="text-xs text-gray-500">Members can remove artifacts from this group</p>
+              <p className="text-xs text-archaeological-olive">Members can remove artifacts from this group</p>
             </div>
           </label>
 
@@ -292,7 +292,7 @@ const GroupSettingsForm: React.FC<GroupSettingsFormProps> = ({ group, onUpdate }
             />
             <div>
               <span className="text-sm font-medium">Manage members</span>
-              <p className="text-xs text-gray-500">Members can add/remove other members</p>
+              <p className="text-xs text-archaeological-olive">Members can add/remove other members</p>
             </div>
           </label>
         </div>

@@ -57,11 +57,11 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Edit Member Permissions</h2>
+        <div className="sticky top-0 bg-white border-b border-archaeological-lightBrown px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-archaeological-charcoal">Edit Member Permissions</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-500"
+            className="text-archaeological-sage hover:text-archaeological-olive"
           >
             <X className="w-5 h-5" />
           </button>
@@ -69,16 +69,16 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
 
         <div className="p-6 space-y-6">
           {/* Member Info */}
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="font-medium text-gray-900">
+          <div className="bg-archaeological-warmGray rounded-lg p-4">
+            <p className="font-medium text-archaeological-charcoal">
               {memberUser?.displayName || memberUser?.username || 'Unknown User'}
             </p>
-            <p className="text-sm text-gray-600">{memberUser?.email}</p>
+            <p className="text-sm text-archaeological-olive">{memberUser?.email}</p>
           </div>
 
           {/* Role Selection */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-archaeological-charcoal mb-2">
               Role
             </label>
             <select
@@ -89,7 +89,7 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
               <option value="member">Member</option>
               <option value="group_admin">Group Admin</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-archaeological-olive mt-1">
               {role === 'group_admin' 
                 ? 'Group admins can manage members and group settings' 
                 : 'Regular members have limited permissions'}
@@ -98,7 +98,7 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
 
           {/* Permissions */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <label className="block text-sm font-medium text-archaeological-charcoal mb-3">
               Permissions
             </label>
             <div className="space-y-3">
@@ -107,11 +107,11 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
                   type="checkbox"
                   checked={permissions.canViewArtifacts}
                   onChange={(e) => handlePermissionChange('canViewArtifacts', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-archaeological-lightBrown"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700">View Artifacts</span>
-                  <p className="text-xs text-gray-500">Can view group artifacts</p>
+                  <span className="text-sm font-medium text-archaeological-charcoal">View Artifacts</span>
+                  <p className="text-xs text-archaeological-olive">Can view group artifacts</p>
                 </div>
               </label>
 
@@ -120,11 +120,11 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
                   type="checkbox"
                   checked={permissions.canCreateArtifacts}
                   onChange={(e) => handlePermissionChange('canCreateArtifacts', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-archaeological-lightBrown"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Create Artifacts</span>
-                  <p className="text-xs text-gray-500">Can add new artifacts to the group</p>
+                  <span className="text-sm font-medium text-archaeological-charcoal">Create Artifacts</span>
+                  <p className="text-xs text-archaeological-olive">Can add new artifacts to the group</p>
                 </div>
               </label>
 
@@ -133,11 +133,11 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
                   type="checkbox"
                   checked={permissions.canEditArtifacts}
                   onChange={(e) => handlePermissionChange('canEditArtifacts', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-archaeological-lightBrown"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Edit Artifacts</span>
-                  <p className="text-xs text-gray-500">Can modify existing artifacts</p>
+                  <span className="text-sm font-medium text-archaeological-charcoal">Edit Artifacts</span>
+                  <p className="text-xs text-archaeological-olive">Can modify existing artifacts</p>
                 </div>
               </label>
 
@@ -146,11 +146,11 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
                   type="checkbox"
                   checked={permissions.canDeleteArtifacts}
                   onChange={(e) => handlePermissionChange('canDeleteArtifacts', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-archaeological-lightBrown"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Delete Artifacts</span>
-                  <p className="text-xs text-gray-500">Can remove artifacts from the group</p>
+                  <span className="text-sm font-medium text-archaeological-charcoal">Delete Artifacts</span>
+                  <p className="text-xs text-archaeological-olive">Can remove artifacts from the group</p>
                 </div>
               </label>
 
@@ -159,18 +159,18 @@ const EditMemberPermissionsDialog: React.FC<EditMemberPermissionsDialogProps> = 
                   type="checkbox"
                   checked={permissions.canManageMembers}
                   onChange={(e) => handlePermissionChange('canManageMembers', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-archaeological-lightBrown"
                 />
                 <div>
-                  <span className="text-sm font-medium text-gray-700">Manage Members</span>
-                  <p className="text-xs text-gray-500">Can add/remove group members</p>
+                  <span className="text-sm font-medium text-archaeological-charcoal">Manage Members</span>
+                  <p className="text-xs text-archaeological-olive">Can add/remove group members</p>
                 </div>
               </label>
             </div>
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex gap-3 justify-end border-t border-gray-200">
+        <div className="sticky bottom-0 bg-archaeological-warmGray px-6 py-4 flex gap-3 justify-end border-t border-archaeological-lightBrown">
           <button
             onClick={onClose}
             className="btn btn-secondary"

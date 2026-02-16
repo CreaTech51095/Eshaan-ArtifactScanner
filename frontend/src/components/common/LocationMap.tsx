@@ -80,11 +80,11 @@ const LocationMap: React.FC<LocationMapProps> = ({
               {markerLabel && (
                 <p className="font-semibold mb-1">{markerLabel}</p>
               )}
-              <p className="text-xs text-gray-600">
+              <p className="text-xs text-archaeological-olive">
                 {lat.toFixed(6)}°, {lng.toFixed(6)}°
               </p>
               {accuracy && (
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-archaeological-olive mt-1">
                   Accuracy: ±{Math.round(accuracy)}m
                 </p>
               )}
@@ -110,13 +110,13 @@ const LocationMap: React.FC<LocationMapProps> = ({
       
       {/* Coordinates display overlay */}
       <div className="absolute bottom-2 left-2 bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm text-xs z-[1000]">
-        <span className="font-mono text-gray-700">
+        <span className="font-mono text-archaeological-charcoal">
           {lat.toFixed(6)}°, {lng.toFixed(6)}°
         </span>
       </div>
       
       {/* Zoom hint */}
-      <div className="absolute top-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm text-xs z-[1000] text-gray-600">
+      <div className="absolute top-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded shadow-sm text-xs z-[1000] text-archaeological-olive">
         Use Ctrl+Scroll to zoom
       </div>
     </div>

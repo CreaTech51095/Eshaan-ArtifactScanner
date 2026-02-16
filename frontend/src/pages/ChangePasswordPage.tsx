@@ -68,7 +68,7 @@ const ChangePasswordPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/profile')}
@@ -79,8 +79,8 @@ const ChangePasswordPage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Change Password</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">Change Password</h1>
+          <p className="mt-2 text-archaeological-olive">
             Update your account password
           </p>
         </div>
@@ -101,7 +101,7 @@ const ChangePasswordPage: React.FC = () => {
 
             {/* Current Password */}
             <div>
-              <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="currentPassword" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <Lock className="w-4 h-4 inline mr-1" />
                 Current Password
               </label>
@@ -121,7 +121,7 @@ const ChangePasswordPage: React.FC = () => {
 
             {/* New Password */}
             <div>
-              <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="newPassword" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <Lock className="w-4 h-4 inline mr-1" />
                 New Password
               </label>
@@ -145,7 +145,7 @@ const ChangePasswordPage: React.FC = () => {
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <Lock className="w-4 h-4 inline mr-1" />
                 Confirm New Password
               </label>

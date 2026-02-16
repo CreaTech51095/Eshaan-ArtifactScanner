@@ -108,7 +108,7 @@ const RequestRolePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/profile')}
@@ -119,12 +119,12 @@ const RequestRolePage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal flex items-center gap-3">
             <Shield className="w-8 h-8 text-primary-600" />
             Request Role Upgrade
           </h1>
-          <p className="mt-2 text-gray-600">
-            Current Role: <strong className="text-gray-900 capitalize">{user.role}</strong>
+          <p className="mt-2 text-archaeological-olive">
+            Current Role: <strong className="text-archaeological-charcoal capitalize">{user.role}</strong>
           </p>
         </div>
 
@@ -157,7 +157,7 @@ const RequestRolePage: React.FC = () => {
             </div>
             <form onSubmit={handleSubmit} className="card-content space-y-4">
               <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="role" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                   Requested Role
                 </label>
                 <select
@@ -175,7 +175,7 @@ const RequestRolePage: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="reason" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="reason" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                   Reason for Request
                 </label>
                 <textarea
@@ -187,7 +187,7 @@ const RequestRolePage: React.FC = () => {
                   disabled={isSubmitting}
                   required
                 />
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-archaeological-olive mt-1">
                   {reason.length}/500 characters (minimum 20)
                 </p>
               </div>
@@ -231,27 +231,27 @@ const RequestRolePage: React.FC = () => {
                 {requestHistory.map((request) => (
                   <div
                     key={request.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    className="border rounded-lg p-4 hover:bg-archaeological-warmGray transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div>
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-archaeological-charcoal">
                           <span className="capitalize">{request.currentRole}</span>
                           {' → '}
                           <span className="capitalize">{request.requestedRole}</span>
                         </p>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-archaeological-olive">
                           {request.createdAt.toLocaleDateString()} at{' '}
                           {request.createdAt.toLocaleTimeString()}
                         </p>
                       </div>
                       {getStatusBadge(request.status)}
                     </div>
-                    <p className="text-sm text-gray-700 mb-2">
+                    <p className="text-sm text-archaeological-charcoal mb-2">
                       <strong>Reason:</strong> {request.reason}
                     </p>
                     {request.reviewNotes && (
-                      <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+                      <p className="text-sm text-archaeological-olive bg-archaeological-warmGray p-2 rounded">
                         <strong>Admin Response:</strong> {request.reviewNotes}
                       </p>
                     )}

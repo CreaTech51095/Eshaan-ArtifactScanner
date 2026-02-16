@@ -137,7 +137,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ isOpen, onClose, onCaptur
           {error ? (
             <div className="text-center p-8">
               <p className="text-red-400 mb-4">{error}</p>
-              <p className="text-gray-400 text-sm">
+              <p className="text-archaeological-sage text-sm">
                 Please ensure you have granted camera permissions and try again.
               </p>
             </div>
@@ -193,7 +193,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ isOpen, onClose, onCaptur
               <button
                 onClick={capturePhoto}
                 disabled={!stream || !!error}
-                className="w-16 h-16 bg-white rounded-full hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                className="w-16 h-16 bg-white rounded-full hover:bg-archaeological-lightBrown transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 title="Take photo"
               >
                 <div className="w-14 h-14 border-4 border-gray-900 rounded-full" />

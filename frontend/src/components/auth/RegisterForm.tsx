@@ -162,12 +162,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
               <div className="p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
                 <strong>Archaeologist:</strong> Create, edit, delete, and manage your own artifacts with photo uploads.
               </div>
-              <div className="p-2 bg-gray-50 border border-gray-200 rounded text-sm text-gray-700">
+              <div className="p-2 bg-archaeological-warmGray border border-archaeological-lightBrown rounded text-sm text-archaeological-charcoal">
                 <strong>Researcher:</strong> View and browse artifacts (read-only access).
               </div>
             </div>
             
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-archaeological-olive mt-2">
               💡 You can change between Archaeologist and Researcher roles anytime in your profile settings. 
               Contact an administrator to request Admin access.
             </p>

@@ -171,7 +171,7 @@ export default function OfflineIndicator({
           flex items-center gap-2 px-3 py-2 rounded-lg shadow-lg
           transition-all duration-300 backdrop-blur-sm select-none
           ${isOnline 
-            ? 'bg-white/90 border border-gray-200 text-gray-700' 
+            ? 'bg-white/90 border border-archaeological-lightBrown text-archaeological-charcoal' 
             : 'bg-orange-500/90 text-white'
           }
           ${isDragging ? 'opacity-80' : 'opacity-100'}
@@ -216,7 +216,7 @@ export default function OfflineIndicator({
 
         {/* Last sync time */}
         {isOnline && lastSyncAt && !isSyncing && (
-          <div className="flex items-center gap-1 text-xs text-gray-500 border-l pl-2 ml-1 border-gray-300">
+          <div className="flex items-center gap-1 text-xs text-archaeological-olive border-l pl-2 ml-1 border-archaeological-lightBrown">
             <Cloud className="w-3 h-3" />
             <span>{formatLastSync(lastSyncAt)}</span>
           </div>
@@ -225,7 +225,7 @@ export default function OfflineIndicator({
 
       {/* Offline mode message */}
       {!isOnline && (
-        <div className="mt-2 px-4 py-2 bg-white/90 border border-orange-200 rounded-lg shadow-lg text-xs text-gray-600 backdrop-blur-sm">
+        <div className="mt-2 px-4 py-2 bg-white/90 border border-orange-200 rounded-lg shadow-lg text-xs text-archaeological-olive backdrop-blur-sm">
           <p>Working offline. Changes will sync when connection is restored.</p>
         </div>
       )}

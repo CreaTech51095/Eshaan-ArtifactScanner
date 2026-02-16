@@ -102,7 +102,7 @@ const EditProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/profile')}
@@ -113,8 +113,8 @@ const EditProfilePage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Edit Profile</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">Edit Profile</h1>
+          <p className="mt-2 text-archaeological-olive">
             Update your personal information
           </p>
         </div>
@@ -123,7 +123,7 @@ const EditProfilePage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="card-content space-y-6">
             {/* Display Name */}
             <div>
-              <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="displayName" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <User className="w-4 h-4 inline mr-1" />
                 Display Name
               </label>
@@ -151,7 +151,7 @@ const EditProfilePage: React.FC = () => {
 
             {/* Username */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="username" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <User className="w-4 h-4 inline mr-1" />
                 Username
               </label>
@@ -183,7 +183,7 @@ const EditProfilePage: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="email" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <Mail className="w-4 h-4 inline mr-1" />
                 Email Address
               </label>
@@ -203,14 +203,14 @@ const EditProfilePage: React.FC = () => {
               {errors.email && (
                 <p className="text-red-600 text-sm mt-1">{errors.email.message}</p>
               )}
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-archaeological-olive mt-1">
                 ⚠️ Changing your email may require you to log in again
               </p>
             </div>
 
             {/* Role */}
             <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="role" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 <Shield className="w-4 h-4 inline mr-1" />
                 Role
               </label>
@@ -236,7 +236,7 @@ const EditProfilePage: React.FC = () => {
                     </div>
                   )}
                   
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-archaeological-olive mt-1">
                     As an Archaeologist, you can create, edit, delete, and manage your own artifacts. 
                     You can downgrade to Researcher for read-only access. Contact an administrator to upgrade to Admin.
                   </p>
@@ -247,11 +247,11 @@ const EditProfilePage: React.FC = () => {
                     type="text"
                     id="role"
                     value={user.role === 'researcher' ? 'Researcher (Read-Only)' : user.role === 'admin' ? 'Administrator' : user.role === 'guest' ? 'Guest' : user.role}
-                    className="input bg-gray-100 cursor-not-allowed"
+                    className="input bg-archaeological-lightBrown cursor-not-allowed"
                     disabled
                     readOnly
                   />
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-archaeological-olive mt-1">
                     {user.role === 'researcher' 
                       ? 'Contact an administrator to upgrade to Archaeologist or Admin roles.'
                       : user.role === 'guest'

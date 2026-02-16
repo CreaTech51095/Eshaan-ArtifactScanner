@@ -99,7 +99,7 @@ const UserManagementPage: React.FC = () => {
       case 'guest':
         return 'bg-yellow-100 text-yellow-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-archaeological-lightBrown text-gray-800'
     }
   }
 
@@ -119,7 +119,7 @@ const UserManagementPage: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/dashboard')}
@@ -130,11 +130,11 @@ const UserManagementPage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal flex items-center gap-3">
             <Users className="w-8 h-8 text-primary-600" />
             User Management
           </h1>
-          <p className="mt-2 text-gray-600">
+          <p className="mt-2 text-archaeological-olive">
             Manage user accounts and permissions
           </p>
         </div>
@@ -144,11 +144,11 @@ const UserManagementPage: React.FC = () => {
           <div className="card-content">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-archaeological-charcoal mb-1">
                   Search Users
                 </label>
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-archaeological-sage" />
                   <input
                     type="text"
                     value={searchTerm}
@@ -160,7 +160,7 @@ const UserManagementPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-archaeological-charcoal mb-1">
                   Filter by Role
                 </label>
                 <select
@@ -183,14 +183,14 @@ const UserManagementPage: React.FC = () => {
         {loading ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <p className="text-gray-500">Loading users...</p>
+              <p className="text-archaeological-olive">Loading users...</p>
             </div>
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500">No users found</p>
+              <Users className="w-12 h-12 text-archaeological-sage mx-auto mb-3" />
+              <p className="text-archaeological-olive">No users found</p>
             </div>
           </div>
         ) : (
@@ -198,37 +198,37 @@ const UserManagementPage: React.FC = () => {
             <div className="card-content p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50 border-b">
+                  <thead className="bg-archaeological-warmGray border-b">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-archaeological-olive uppercase tracking-wider">
                         User
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-archaeological-olive uppercase tracking-wider">
                         Role
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-archaeological-olive uppercase tracking-wider">
                         Status
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-left text-xs font-medium text-archaeological-olive uppercase tracking-wider">
                         Created
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="px-6 py-3 text-right text-xs font-medium text-archaeological-olive uppercase tracking-wider">
                         Actions
                       </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {filteredUsers.map((u) => (
-                      <tr key={u.id} className={!u.isActive ? 'bg-gray-50 opacity-60' : ''}>
+                      <tr key={u.id} className={!u.isActive ? 'bg-archaeological-warmGray opacity-60' : ''}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="text-sm font-medium text-gray-900">
+                            <div className="text-sm font-medium text-archaeological-charcoal">
                               {u.displayName || u.username}
                               {u.id === user.id && (
-                                <span className="ml-2 text-xs text-gray-500">(You)</span>
+                                <span className="ml-2 text-xs text-archaeological-olive">(You)</span>
                               )}
                             </div>
-                            <div className="text-sm text-gray-500">{u.email}</div>
+                            <div className="text-sm text-archaeological-olive">{u.email}</div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -268,7 +268,7 @@ const UserManagementPage: React.FC = () => {
                             {u.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-archaeological-olive">
                           {new Date(u.createdAt).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -308,10 +308,10 @@ const UserManagementPage: React.FC = () => {
                               </>
                             )}
                             {u.role === 'admin' && u.id !== user.id && (
-                              <span className="text-xs text-gray-400">Protected</span>
+                              <span className="text-xs text-archaeological-sage">Protected</span>
                             )}
                             {u.id === user.id && (
-                              <span className="text-xs text-gray-400">—</span>
+                              <span className="text-xs text-archaeological-sage">—</span>
                             )}
                           </div>
                         </td>
@@ -328,13 +328,13 @@ const UserManagementPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
           <div className="card">
             <div className="card-content">
-              <p className="text-sm text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900">{users.length}</p>
+              <p className="text-sm text-archaeological-olive">Total Users</p>
+              <p className="text-2xl font-bold text-archaeological-charcoal">{users.length}</p>
             </div>
           </div>
           <div className="card">
             <div className="card-content">
-              <p className="text-sm text-gray-600">Admins</p>
+              <p className="text-sm text-archaeological-olive">Admins</p>
               <p className="text-2xl font-bold text-red-600">
                 {users.filter(u => u.role === 'admin').length}
               </p>
@@ -342,7 +342,7 @@ const UserManagementPage: React.FC = () => {
           </div>
           <div className="card">
             <div className="card-content">
-              <p className="text-sm text-gray-600">Archaeologists</p>
+              <p className="text-sm text-archaeological-olive">Archaeologists</p>
               <p className="text-2xl font-bold text-blue-600">
                 {users.filter(u => u.role === 'archaeologist').length}
               </p>
@@ -350,7 +350,7 @@ const UserManagementPage: React.FC = () => {
           </div>
           <div className="card">
             <div className="card-content">
-              <p className="text-sm text-gray-600">Researchers</p>
+              <p className="text-sm text-archaeological-olive">Researchers</p>
               <p className="text-2xl font-bold text-green-600">
                 {users.filter(u => u.role === 'researcher').length}
               </p>

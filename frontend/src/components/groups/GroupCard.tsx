@@ -17,21 +17,21 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
     >
       <div className="card-content">
         <div className="flex items-start justify-between mb-3">
-          <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
+          <h3 className="text-lg font-semibold text-archaeological-charcoal line-clamp-1">
             {group.name}
           </h3>
           {group.settings.privacy === 'private' && (
-            <Shield className="w-4 h-4 text-gray-400" />
+            <Shield className="w-4 h-4 text-archaeological-sage" />
           )}
         </div>
 
         {group.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="text-sm text-archaeological-olive mb-4 line-clamp-2">
             {group.description}
           </p>
         )}
 
-        <div className="flex items-center gap-4 text-sm text-gray-500">
+        <div className="flex items-center gap-4 text-sm text-archaeological-olive">
           <div className="flex items-center gap-1">
             <Users className="w-4 h-4" />
             <span>{group.memberCount || 0} members</span>
@@ -42,7 +42,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
           </div>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-gray-200 text-xs text-gray-400">
+        <div className="mt-4 pt-4 border-t border-archaeological-lightBrown text-xs text-archaeological-sage">
           Created {new Date(group.createdAt).toLocaleDateString()}
         </div>
       </div>

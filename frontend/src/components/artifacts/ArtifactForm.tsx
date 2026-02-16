@@ -318,7 +318,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-archaeological-charcoal mb-1">
           Artifact Name *
         </label>
         <input
@@ -340,7 +340,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-archaeological-charcoal mb-1">
           Description
         </label>
         <textarea
@@ -362,8 +362,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       {/* Material Selection */}
       <div>
-        <label htmlFor="material" className="block text-sm font-medium text-gray-700 mb-1">
-          Material <span className="text-gray-500 font-normal">(Optional)</span>
+        <label htmlFor="material" className="block text-sm font-medium text-archaeological-charcoal mb-1">
+          Material <span className="text-archaeological-olive font-normal">(Optional)</span>
         </label>
         <select
           value={materialSelection}
@@ -387,14 +387,14 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
             </option>
           ))}
         </select>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-archaeological-olive mt-1">
           Primary archaeological categorization by material composition
         </p>
         
         {/* Custom Material Input */}
         {materialSelection === 'custom' && (
           <div className="mt-3">
-            <label htmlFor="customMaterial" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="customMaterial" className="block text-sm font-medium text-archaeological-charcoal mb-1">
               Specify Material *
             </label>
             <input
@@ -413,8 +413,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       {/* Metal Subtype Selection (Conditional) */}
       {materialSelection === 'metal' && (
         <div>
-          <label htmlFor="metalSubtype" className="block text-sm font-medium text-gray-700 mb-1">
-            Metal Subtype <span className="text-gray-500 font-normal">(Optional)</span>
+          <label htmlFor="metalSubtype" className="block text-sm font-medium text-archaeological-charcoal mb-1">
+            Metal Subtype <span className="text-archaeological-olive font-normal">(Optional)</span>
           </label>
           <select
             value={metalSubtypeSelection}
@@ -432,14 +432,14 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               </option>
             ))}
           </select>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-archaeological-olive mt-1">
             Specify the specific metal type
           </p>
           
           {/* Custom Metal Subtype Input */}
           {metalSubtypeSelection === 'custom' && (
             <div className="mt-3">
-              <label htmlFor="customMetalSubtype" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="customMetalSubtype" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 Specify Metal Type *
               </label>
               <input
@@ -458,8 +458,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
       {/* Object Classification */}
       <div>
-        <label htmlFor="objectClassification" className="block text-sm font-medium text-gray-700 mb-1">
-          Object Classification <span className="text-gray-500 font-normal">(Optional)</span>
+        <label htmlFor="objectClassification" className="block text-sm font-medium text-archaeological-charcoal mb-1">
+          Object Classification <span className="text-archaeological-olive font-normal">(Optional)</span>
         </label>
         <select
           value={objectClassificationSelection}
@@ -477,14 +477,14 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
             </option>
           ))}
         </select>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-archaeological-olive mt-1">
           Categorization by object type or use
         </p>
         
         {/* Custom Object Classification Input */}
         {objectClassificationSelection === 'custom' && (
           <div className="mt-3">
-            <label htmlFor="customObjectClassification" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="customObjectClassification" className="block text-sm font-medium text-archaeological-charcoal mb-1">
               Specify Object Type *
             </label>
             <input
@@ -501,7 +501,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="discoveryDate" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="discoveryDate" className="block text-sm font-medium text-archaeological-charcoal mb-1">
           Discovery Date
         </label>
         <input
@@ -516,7 +516,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="discoverySite" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="discoverySite" className="block text-sm font-medium text-archaeological-charcoal mb-1">
           Discovery Site
         </label>
         <input
@@ -537,7 +537,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="location" className="block text-sm font-medium text-archaeological-charcoal mb-1">
           Current Location
         </label>
         <input
@@ -558,11 +558,11 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       </div>
 
       {/* GPS Location Capture */}
-      <div className="border rounded-lg p-4 bg-gray-50">
+      <div className="border rounded-lg p-4 bg-archaeological-warmGray">
         <div className="flex items-center justify-between mb-3">
-          <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+          <label className="block text-sm font-medium text-archaeological-charcoal flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            GPS Coordinates <span className="text-gray-500 font-normal">(Optional)</span>
+            GPS Coordinates <span className="text-archaeological-olive font-normal">(Optional)</span>
           </label>
           
           {gpsLocation && (
@@ -577,7 +577,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
           )}
         </div>
         
-        <p className="text-xs text-gray-600 mb-3">
+        <p className="text-xs text-archaeological-olive mb-3">
           Automatically capture your device's GPS coordinates
         </p>
 
@@ -670,11 +670,11 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               Capture GPS Location
             </button>
             
-            <div className="text-center text-sm text-gray-500">or</div>
+            <div className="text-center text-sm text-archaeological-olive">or</div>
             
             {/* Location Search */}
             <div className="relative">
-              <label htmlFor="locationSearch" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="locationSearch" className="block text-sm font-medium text-archaeological-charcoal mb-1">
                 Search by City, State, or Country
               </label>
               <div className="relative">
@@ -688,31 +688,31 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                 />
                 {isSearching && (
                   <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                    <Loader className="w-4 h-4 text-gray-400 animate-spin" />
+                    <Loader className="w-4 h-4 text-archaeological-sage animate-spin" />
                   </div>
                 )}
               </div>
               
               {/* Search Results Dropdown */}
               {showSearchResults && searchResults.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                <div className="absolute z-10 w-full mt-1 bg-white border border-archaeological-lightBrown rounded-md shadow-lg max-h-60 overflow-auto">
                   {searchResults.map((result, index) => (
                     <button
                       key={index}
                       type="button"
                       onClick={() => handleLocationSelect(result)}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 transition-colors"
+                      className="w-full text-left px-4 py-3 hover:bg-archaeological-warmGray border-b border-gray-100 last:border-b-0 transition-colors"
                     >
                       <div className="flex items-start gap-2">
-                        <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                        <MapPin className="w-4 h-4 text-archaeological-sage mt-0.5 flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 truncate">
+                          <p className="text-sm font-medium text-archaeological-charcoal truncate">
                             {result.address?.city || result.displayName.split(',')[0]}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">
+                          <p className="text-xs text-archaeological-olive truncate">
                             {result.displayName}
                           </p>
-                          <p className="text-xs text-gray-400 mt-1 font-mono">
+                          <p className="text-xs text-archaeological-sage mt-1 font-mono">
                             {result.lat.toFixed(4)}, {result.lng.toFixed(4)}
                           </p>
                         </div>
@@ -723,8 +723,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               )}
               
               {showSearchResults && searchResults.length === 0 && locationSearch.length >= 3 && !isSearching && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg p-4">
-                  <p className="text-sm text-gray-500 text-center">
+                <div className="absolute z-10 w-full mt-1 bg-white border border-archaeological-lightBrown rounded-md shadow-lg p-4">
+                  <p className="text-sm text-archaeological-olive text-center">
                     No locations found. Try a different search term.
                   </p>
                 </div>
@@ -738,7 +738,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                 setLocationSearch('')
                 setSearchResults([])
               }}
-              className="w-full text-sm text-gray-600 hover:text-gray-700 underline"
+              className="w-full text-sm text-archaeological-olive hover:text-archaeological-charcoal underline"
             >
               Or enter exact coordinates manually
             </button>
@@ -747,12 +747,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
         {/* Manual GPS Entry */}
         {showManualGpsEntry && (
-          <div className="mt-3 p-3 bg-white border border-gray-200 rounded-md space-y-3">
-            <p className="text-sm font-medium text-gray-700">Enter Exact Coordinates</p>
-            <p className="text-xs text-gray-500">Enter precise latitude and longitude values</p>
+          <div className="mt-3 p-3 bg-white border border-archaeological-lightBrown rounded-md space-y-3">
+            <p className="text-sm font-medium text-archaeological-charcoal">Enter Exact Coordinates</p>
+            <p className="text-xs text-archaeological-olive">Enter precise latitude and longitude values</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="manualLat" className="block text-xs font-medium text-gray-600 mb-1">
+                <label htmlFor="manualLat" className="block text-xs font-medium text-archaeological-olive mb-1">
                   Latitude (-90 to 90)
                 </label>
                 <input
@@ -768,7 +768,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                 />
               </div>
               <div>
-                <label htmlFor="manualLng" className="block text-xs font-medium text-gray-600 mb-1">
+                <label htmlFor="manualLng" className="block text-xs font-medium text-archaeological-olive mb-1">
                   Longitude (-180 to 180)
                 </label>
                 <input
@@ -823,8 +823,8 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Photos <span className="text-gray-500 font-normal">
+        <label className="block text-sm font-medium text-archaeological-charcoal mb-2">
+          Photos <span className="text-archaeological-olive font-normal">
             (Optional)
           </span>
         </label>
@@ -859,7 +859,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
               </button>
             </div>
             
-            <div className="flex flex-col text-sm text-gray-500">
+            <div className="flex flex-col text-sm text-archaeological-olive">
               <span>JPEG, PNG, or WebP (max 10MB each)</span>
               {photoPreviewUrls.length > 0 && (
                 <span className="text-blue-600 font-medium">{photoPreviewUrls.length} photo{photoPreviewUrls.length !== 1 ? 's' : ''} selected</span>
@@ -875,7 +875,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
           {/* Existing Photos (Edit Mode) */}
           {isEditMode && existingPhotos.length > 0 && (
             <div className="space-y-2">
-              <h4 className="text-sm font-medium text-gray-700">
+              <h4 className="text-sm font-medium text-archaeological-charcoal">
                 Current Photos ({keptPhotoIds.length} of {existingPhotos.length})
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -889,7 +889,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
                       <img
                         src={photo.url}
                         alt={photo.filename}
-                        className="w-full h-32 object-cover rounded-lg border-2 border-gray-200"
+                        className="w-full h-32 object-cover rounded-lg border-2 border-archaeological-lightBrown"
                       />
                       {isKept ? (
                         <button
@@ -919,7 +919,7 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
           {photoPreviewUrls.length > 0 && (
             <div className="space-y-2">
               {isEditMode && (
-                <h4 className="text-sm font-medium text-gray-700">
+                <h4 className="text-sm font-medium text-archaeological-charcoal">
                   New Photos ({photoPreviewUrls.length})
                 </h4>
               )}
@@ -953,12 +953,12 @@ const ArtifactForm: React.FC<ArtifactFormProps> = ({
 
           {/* No Photos Message */}
           {photoPreviewUrls.length === 0 && (!isEditMode || existingPhotos.length === 0) && (
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <Camera className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500">
+            <div className="border-2 border-dashed border-archaeological-lightBrown rounded-lg p-8 text-center">
+              <Camera className="w-12 h-12 text-archaeological-sage mx-auto mb-3" />
+              <p className="text-archaeological-olive">
                 {isEditMode ? 'No new photos selected' : 'No photos added yet'}
               </p>
-              <p className="text-sm text-gray-400 mt-1">
+              <p className="text-sm text-archaeological-sage mt-1">
                 Photos are optional. You can add multiple photos - just select multiple files or add one at a time
               </p>
             </div>

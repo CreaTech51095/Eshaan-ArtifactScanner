@@ -120,7 +120,7 @@ const GroupListPage: React.FC = () => {
         {filteredGroups.length === 0 ? (
           <div className="card">
             <div className="card-content text-center py-12">
-              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <Users className="w-16 h-16 text-archaeological-sage mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-archaeological-charcoal mb-2">
                 {searchTerm ? 'No groups found' : 'No groups yet'}
               </h3>

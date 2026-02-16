@@ -15,7 +15,7 @@ const UserProfilePage: React.FC = () => {
   console.log('UserProfilePage: showing admin button?', user.role === 'admin')
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-archaeological-warmGray">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <button
           onClick={() => navigate('/dashboard')}
@@ -26,8 +26,8 @@ const UserProfilePage: React.FC = () => {
         </button>
 
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-archaeological-charcoal">My Profile</h1>
+          <p className="mt-2 text-archaeological-olive">
             View and manage your account information
           </p>
         </div>
@@ -41,7 +41,7 @@ const UserProfilePage: React.FC = () => {
                   {user.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || 'U'}
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-archaeological-charcoal">
                     {user.displayName || user.username || 'User'}
                   </h2>
                   {user.role && (
@@ -53,40 +53,40 @@ const UserProfilePage: React.FC = () => {
               </div>
 
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <Mail className="w-5 h-5 text-gray-400" />
+                <div className="flex items-center gap-3 p-3 bg-archaeological-warmGray rounded-lg">
+                  <Mail className="w-5 h-5 text-archaeological-sage" />
                   <div>
-                    <p className="text-sm font-medium text-gray-500">Email</p>
-                    <p className="text-gray-900">{user.email}</p>
+                    <p className="text-sm font-medium text-archaeological-olive">Email</p>
+                    <p className="text-archaeological-charcoal">{user.email}</p>
                   </div>
                 </div>
 
                 {user.username && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <User className="w-5 h-5 text-gray-400" />
+                  <div className="flex items-center gap-3 p-3 bg-archaeological-warmGray rounded-lg">
+                    <User className="w-5 h-5 text-archaeological-sage" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Username</p>
-                      <p className="text-gray-900">{user.username}</p>
+                      <p className="text-sm font-medium text-archaeological-olive">Username</p>
+                      <p className="text-archaeological-charcoal">{user.username}</p>
                     </div>
                   </div>
                 )}
 
                 {user.role && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Shield className="w-5 h-5 text-gray-400" />
+                  <div className="flex items-center gap-3 p-3 bg-archaeological-warmGray rounded-lg">
+                    <Shield className="w-5 h-5 text-archaeological-sage" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Role</p>
-                      <p className="text-gray-900 capitalize">{user.role}</p>
+                      <p className="text-sm font-medium text-archaeological-olive">Role</p>
+                      <p className="text-archaeological-charcoal capitalize">{user.role}</p>
                     </div>
                   </div>
                 )}
 
                 {user.createdAt && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                    <Calendar className="w-5 h-5 text-gray-400" />
+                  <div className="flex items-center gap-3 p-3 bg-archaeological-warmGray rounded-lg">
+                    <Calendar className="w-5 h-5 text-archaeological-sage" />
                     <div>
-                      <p className="text-sm font-medium text-gray-500">Member Since</p>
-                      <p className="text-gray-900">
+                      <p className="text-sm font-medium text-archaeological-olive">Member Since</p>
+                      <p className="text-archaeological-charcoal">
                         {new Date(user.createdAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'long',
@@ -103,7 +103,7 @@ const UserProfilePage: React.FC = () => {
           {/* Actions Card */}
           <div className="card">
             <div className="card-content">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Account Actions</h3>
+              <h3 className="text-lg font-semibold text-archaeological-charcoal mb-4">Account Actions</h3>
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/profile/edit')}

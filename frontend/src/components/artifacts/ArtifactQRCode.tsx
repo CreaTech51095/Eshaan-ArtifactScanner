@@ -166,7 +166,7 @@ const ArtifactQRCode: React.FC<ArtifactQRCodeProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-center">
-        <div className="bg-white p-4 rounded-lg border-2 border-gray-200 inline-block">
+        <div className="bg-white p-4 rounded-lg border-2 border-archaeological-lightBrown inline-block">
           <canvas ref={canvasRef} />
         </div>
       </div>
@@ -199,10 +199,10 @@ const ArtifactQRCode: React.FC<ArtifactQRCodeProps> = ({
       </div>
 
       <div className="text-center">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-archaeological-olive">
           Scan this QR code to view artifact details
         </p>
-        <p className="text-xs text-gray-400 mt-1">
+        <p className="text-xs text-archaeological-sage mt-1">
           ID: {artifactId}
         </p>
       </div>
